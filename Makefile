@@ -42,7 +42,8 @@ fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 	 -e 's/\^Double;/\^Double; PFile = ^File;/' \
 	 -e 's/function strend(str : longint) : longint;/function strend(str : pchar) : pchar;/' \
 	| grep -v '^{$$include' \
-	| grep -v "[^']*';$$" \
+	| grep -v "^[^']*';$$" \
+	| grep -v "^ *var$$" \
 	> fidoconf.pas
 endif
 
