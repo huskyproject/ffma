@@ -66,6 +66,7 @@ clean:
 	-$(RM) *$(OBJ)
 	-$(RM) *$(LIB)
 	-$(RM) *$(TPU)
+	-$(RM) *~
 
 distclean: clean
 	-$(RM) ffma$(EXE)
