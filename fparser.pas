@@ -31,6 +31,29 @@ const
  a_symbol=7;
  a_vergleichmit=8; { "..." }
 
+function unescape(s:string):string;
+type
+	replacearray=array[1..2] of record 
+									orig,repl:string 
+								end;
+const
+	rep:replacearray=((orig:'\\';repl:'\'),(orig:'\1';repl:#1));
+var
+	i:word;
+	position:word;
+begin
+	writeln('Vor: ',s);
+	for i:=1 to high(rep) do begin
+		while pos(rep[i].orig,s)>0 do begin
+			position:=pos(rep[i].orig,s);
+			delete(s,position,length(rep[i].orig));
+			insert(rep[i].repl,s,position);
+		end;
+	end;
+	writeln('Nach: ',s);
+	unescape:=s;
+end;
+
 function whatis(s:String):integer;
 var
  i:word;
@@ -139,6 +162,7 @@ begin
                      end;
       a_symbol,
       a_vergleichmit:begin
+						t:=unescape(t);
                        if not (
                           ((x^.ele='') and (x^.l=nil) and (x^.r=nil)) or
                           ((x^.ele<>'') and (x^.l<>nil) and (x^.r=nil)) or

@@ -5,6 +5,8 @@
 0.06.04 --- not released
 ========================
 + search options kluge. Parameter similar to search option body
++ "\" is now used as escape-sequence. "\" has to be written as "\\".
+  asc(1) has to be written as "\1"
 
 0.06.03 --- 25.04.00 (sb)
 =========================
