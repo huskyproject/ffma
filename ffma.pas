@@ -968,7 +968,7 @@ begin
 	 	writeln('Please do not use FFMA under this OS!'); halt(255);
 	 end;
 
-	 fc:=readconfig;
+	 fc:=readconfig(NIL);
 	 openlogfile(strpas(fc^.logfiledir)+'ffma.log');
 	 if getConfigFileNameForProgram('FFMA','ffma.ini')<>nil then begin
 		configfile:=getConfigFileNameForProgram('FFMA','ffma.ini');
