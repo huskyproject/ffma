@@ -91,6 +91,9 @@ endif
 install: ffma$(EXE)
 	$(INSTALL) $(IBOPT) ffma$(EXE) $(BINDIR)
 
+uninstall:
+	-$(RM) $(BINDIR)$(DIRSEP)ffma$(EXE)
+
 clean:
 	-$(RM) fidoconf.pas
 	-$(RM) fidoconf.h
