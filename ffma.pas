@@ -30,14 +30,14 @@ program ffma;
 
 {$ifdef fpc}
 	{$ifdef linux}
-     Uses ini,erweiter,strings,utils,fparser,memman,log,smapi,match,fidoconf,fidoconf2;
+     Uses crt,dos,ini,erweiter,strings,utils,fparser,memman,log,smapi,match,fidoconf,fidoconf2;
 	{$endif}
 {$endif}
 
 
 const
 	configfile:string='/etc/fido/ffma.ini';
-	version='0.06.01';
+	version='0.06.02';
     compiler:string='Unknown';
 
 type
@@ -66,6 +66,28 @@ var
 		save:boolean;
       end;
 
+function uniqfilename(path:string):string;
+const
+	conv:string='0123456789ABCDEF';
+
+var
+	i:word;
+	name:string;
+begin
+	repeat
+		name:=path+'/';
+		for i:=1 to 8 do name:=name+conv[random(16)+1];
+	until not exist(name);
+	uniqfilename:=name;
+end;
+
+function isdir(s:string):boolean;
+var
+	dir:searchrec;
+begin
+	FindFirst(s, anyfile, Dir);
+	isdir:=(doserror=0) and ((dir.attr and $10)=$10);
+end;
 
 procedure storeuid(var l:puid;msgbase:string;uid:longint);
 begin
@@ -254,10 +276,16 @@ var
  f:text;
  s,t:string;
  i:word;
+ filename:string;
 begin
     area^.f^.ReadMsg(msg,xmsg,0,0,nil,0,nil);
-    assign(f,ziel);
-    if not exist(ziel) then begin rewrite(f); close(f); end;
+    if isdir(ziel) then begin
+        filename:=uniqfilename(ziel);
+    end else begin
+        filename:=ziel;
+    end;
+    assign(f,filename);
+    if not exist(filename) then begin rewrite(f); close(f); end;
     append(f);
     if ioresult<>0 then begin writeln('Could not open ',ziel); halt; end;
     writeln(f,asc(80,'='));
@@ -282,12 +310,18 @@ var
  textsize,i:longint;
  f:text;
  s,t:string;
+ filename:string;
 begin
     textsize:=area^.f^.GetTextLen(msg);
     textbuf:=getmemory(textsize);
     area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,0,nil);
-    assign(f,ziel);
-    if not exist(ziel) then begin rewrite(f); close(f); end;
+	if isdir(ziel) then begin
+		filename:=uniqfilename(ziel);
+	end else begin
+		filename:=ziel;
+	end;
+    assign(f,filename);
+    if not exist(filename) then begin rewrite(f); close(f); end;
     append(f);
     if ioresult<>0 then begin writeln('Could not open ',ziel); halt; end;
     writeln(f,asc(80,'='));
