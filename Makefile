@@ -12,9 +12,11 @@ ifeq ($(DEBUG), 1)
 ifeq ($(PC), ppc386)
   POPT = -g  -XS -Co -Ci -Cr -Ct -T$(UNAMELONG) 
   LOPT = -Fl$(LIBDIR)
+  PCOPT =
 else
   POPT = -g -T$(UNAMELONG) 
   POPT = -L$(LIBDIR)
+  PCOPT = -c
 endif
 else
 ifeq ($(PC), ppc386)
@@ -29,16 +31,6 @@ endif
 
 all: ffma$(EXE)
 
-%$(OBJ): %.pas
-	$(PC) $(POPT) -c $*.pas
-
-fidoconf2.pas: gpcstrings$(OBJ) fidoconf$(OBJ)
-
-ffma$(EXE): fidoconf2$(OBJ) erweiter$(OBJ) fparser$(OBJ) memman$(OBJ) \
-            utils$(OBJ) log$(OBJ) ini$(OBJ) match$(OBJ) fidoconf$(OBJ) \
-            smapi$(OBJ) ffma.pas
-	$(PC) $(POPT) $(LOPT) ffma.pas
-
 ifdef H2PAS
 fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 	cat $(INCDIR)/fidoconf/fidoconf.h \
@@ -47,9 +39,23 @@ fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 	 fidoconf.h | sed -e 's/\^char/pchar/g' \
 	 -e 's/\^Double;/\^Double; PFile = ^File;/' \
 	 -e 's/function strend(str : longint) : longint;/function strend(str : pchar) : pchar;/' \
-	| grep -v "^\{$include" \ 
+	| fgrep -v '^{$$include' \
 	> fidoconf.pas
 endif
+
+%$(OBJ): %.pas
+	$(PC) $(POPT) $(PCOPT) $*.pas
+
+ifeq ($(PC), ppc386)
+fidoconf2.pas: fidoconf$(OBJ)
+else
+fidoconf2.pas: gpcstrings$(OBJ) fidoconf$(OBJ)
+endif
+
+ffma$(EXE): fidoconf2$(OBJ) erweiter$(OBJ) fparser$(OBJ) memman$(OBJ) \
+            utils$(OBJ) log$(OBJ) ini$(OBJ) match$(OBJ) fidoconf$(OBJ) \
+            smapi$(OBJ) ffma.pas
+	$(PC) $(POPT) $(LOPT) ffma.pas
 
 install: ffma$(EXE)
 	$(INSTALL) $(IBOPT) ffma$(EXE) $(BINDIR)
