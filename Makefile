@@ -95,7 +95,7 @@ uninstall:
 	-$(RM) $(BINDIR)$(DIRSEP)ffma$(EXE)
 
 clean:
-	-$(RM) fidoconf.pas
+	-$(RM) fconf.pas
 	-$(RM) fidoconf.h
 	-$(RM) *$(OBJ)
 	-$(RM) *$(LIB)
