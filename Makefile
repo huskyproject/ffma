@@ -94,16 +94,16 @@ install: ffma$(EXE)
 	$(INSTALL) $(IBOPT) ffma$(EXE) $(BINDIR)
 
 uninstall:
-	-$(RM) $(BINDIR)$(DIRSEP)ffma$(EXE)
+	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)ffma$(EXE)
 
 clean:
-	-$(RM) fconf.pas
-	-$(RM) fidoconf.h
-	-$(RM) *$(OBJ)
-	-$(RM) *$(LIB)
-	-$(RM) *$(TPU)
-	-$(RM) *~
+	-$(RM) $(RMOPT) fconf.pas
+	-$(RM) $(RMOPT) fidoconf.h
+	-$(RM) $(RMOPT) *$(OBJ)
+	-$(RM) $(RMOPT) *$(LIB)
+	-$(RM) $(RMOPT) *$(TPU)
+	-$(RM) $(RMOPT) *~
 
 distclean: clean
-	-$(RM) ffma$(EXE)
+	-$(RM) $(RMOPT) ffma$(EXE)
 
