@@ -157,7 +157,7 @@ unit fidoconf;
 
      link = s_link;
 
-     e_routing = (host := 1,hub,boss,noroute);
+     e_routing = (route_zero,host,hub,boss,noroute);
 
      routing = e_routing;
 
