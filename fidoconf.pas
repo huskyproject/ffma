@@ -25,8 +25,6 @@ unit fidoconf;
 
 {$ifndef FIDOCONFIG_H}
 {$define FIDOCONFIG_H}
-{$ifndef FPC}
-{$endif}
 
   const
      MSGTYPE_PASSTHROUGH = $04;
@@ -45,7 +43,7 @@ unit fidoconf;
   function strend(str : pchar) : pchar;
     { return type might be wrong }   
 
-{$ifndef FPC}
+{$ifndef PASCAL}
 
     var
        actualLine : pchar;cvar;externalactualLine';
