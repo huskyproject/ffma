@@ -245,8 +245,8 @@ begin
     if destfcarea=nil then begin
       writeln('Could not open Msgbase: ',p^.msgbase); halt;
     end;
-
     destarea:=MsgOpenArea(destfcarea^.filename,MSGAREA_CRIFNEC,destfcarea^.msgbtype);
+	destarea^.f^.lock(destarea);
     if destarea=nil then begin
       writeln('Could not open Msgbase: ',p^.msgbase);  halt;
     end;
@@ -268,6 +268,7 @@ begin
     freememory(textbuf,true);
     freememory(ctrlbuf,true);
     if p^.dostat<>nil then dodostatment(destfcarea,destarea,newnr,p^.dostat);
+	destarea^.f^.unlock(destarea);
     destarea^.f^.closearea(destarea);
 end;
 
