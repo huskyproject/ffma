@@ -2,6 +2,11 @@
 -Changes
 !Bugfix
 
+0.06.02 --- 24.03.00 (sb)
+==========================
++ exportmsg and exportheader supports directories. 
+  Files with unique names are created.
+
 0.06.01 --- 23.03.00 (sms)
 ==========================
 ! incrementing message number on delete in SDM and JAM areas
