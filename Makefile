@@ -1,26 +1,37 @@
 # include Husky-Makefile-Config
 include ../huskymak.cfg
 
-ifeq ($(DEBUG), 1)
-#  POPT = -g  -XS -Co -Ci -Cr -Ct -ddebugit
-  POPT = -g  -XS -Co -Ci -Cr -Ct
-else
-  POPT = -v0 -XS -Co -Ci -Cr -Ct
-endif
-
-LOPT = -Fl$(LIBDIR)
-
 ifeq ($(UNAME), LNX)
   UNAMELONG = linux
 else
   UNAMELONG = $(UNAME)
 endif
 
+ifeq ($(DEBUG), 1)
+#  POPT = -g  -XS -Co -Ci -Cr -Ct -ddebugit
+ifeq ($(PC), ppc386)
+  POPT = -g  -XS -Co -Ci -Cr -Ct -T$(UNAMELONG) 
+  LOPT = -Fl$(LIBDIR)
+else
+  POPT = -g -T$(UNAMELONG) 
+  POPT = -L$(LIBDIR)
+endif
+else
+ifeq ($(PC), ppc386)
+  POPT = -v0 -XS -Co -Ci -Cr -Ct
+  LOPT = -Fl$(LIBDIR)
+else
+  POPT =
+  LOPT = -L$(LIBDIR)
+endif
+endif
+
+
 all: ffma$(EXE)
 
 ffma$(EXE): fidoconf2.pas erweiter.pas fparser.pas memman.pas utils.pas \
             log.pas ini.pas match.pas fidoconf.pas smapi.pas ffma.pas
-	$(PC) $(POPT) $(LOPT) -T$(UNAMELONG) ffma.pas
+	$(PC) $(POPT) $(LOPT) ffma.pas
 
 ifdef H2PAS
 fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
