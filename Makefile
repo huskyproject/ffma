@@ -62,6 +62,7 @@ install: ffma$(EXE)
 
 clean:
 	-$(RM) fidoconf.pas
+	-$(RM) fidoconf.h
 	-$(RM) *$(OBJ)
 	-$(RM) *$(LIB)
 	-$(RM) *$(TPU)
