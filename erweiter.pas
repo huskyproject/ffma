@@ -34,6 +34,7 @@ unit erweiter;
 interface
 
 {$ifdef __GPC__}
+{$X+}
 uses gpcstrings;
 {$endif}
 
