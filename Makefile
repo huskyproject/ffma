@@ -38,26 +38,28 @@ fconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 ifeq ($(PC), gpc)
 	cat $(INCDIR)/fidoconf/fidoconf.h \
 	 | grep -v "^.define strend" \
+	 | grep -v "^ *extern " \
 	 | awk 'BEGIN { cpp=0; } { if (($$1 == "#ifdef") && ($$2 == "__cplusplus")) { cpp=1; } else if (($$1 == "#endif") && (cpp == 1)) { cpp=0; } else if (cpp == 1) { printf "\n" } else { print; } }' > fidoconf.h
 	h2pas -u fconf -p -l fidoconfig -s -d -o /dev/stdout \
 	 fidoconf.h | sed -e 's/\^char/pchar/g' \
 	 -e 's/\^Double;/\^Double; PFile = ^File; PPChar = ^PChar;/' \
-	| grep -v '^{$$include' \
-	| grep -v "^[^']*';$$" \
-	| grep -v "^ *var$$" \
-	| sed 's/cdecl;//g' \
-	> fconf.pas
+	 | grep -v '^{$$include' \
+	 | grep -v "^[^']*';$$" \
+	 | grep -v "^ *var$$" \
+	 | sed 's/cdecl;//g' \
+	 > fconf.pas
 else
 	cat $(INCDIR)/fidoconf/fidoconf.h \
 	 | grep -v "^.define strend" \
+	 | grep -v "^ *extern " \
 	 | awk 'BEGIN { cpp=0; } { if (($$1 == "#ifdef") && ($$2 == "__cplusplus")) { cpp=1; } else if (($$1 == "#endif") && (cpp == 1)) { cpp=0; } else if (cpp == 1) { printf "\n" } else { print; } }' > fidoconf.h
 	h2pas -u fconf -p -l fidoconfig -s -d -o /dev/stdout \
 	 fidoconf.h | sed -e 's/\^char/pchar/g' \
 	 -e 's/\^Double;/\^Double; PFile = ^File; PPChar = ^PChar;/' \
-	| grep -v '^{$$include' \
-	| grep -v "^[^']*';$$" \
-	| grep -v "^ *var$$" \
-	> fconf.pas
+	 | grep -v '^{$$include' \
+	 | grep -v "^[^']*';$$" \
+	 | grep -v "^ *var$$" \
+	 > fconf.pas
 endif
 endif
 
