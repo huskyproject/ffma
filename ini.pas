@@ -5,7 +5,8 @@ unit ini;
 interface
 
 {$ifdef __GPC__}
-	uses fparser,utils,erweiter,gpcstrings,log,gpcsmapi,memman,gpcfidoconf,fidoconf2;
+{$x+}
+	uses fparser,utils,erweiter,gpcstrings,log,gpcsmapi,memman,fidoconf,fidoconf2;
 {$endif}
 
 {$ifdef fpc}

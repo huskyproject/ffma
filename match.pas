@@ -3,6 +3,7 @@ unit match;
 interface
 
 {$ifdef __GPC__}
+{$x+}
 	uses fparser,gpcsmapi,erweiter,utils,memman,gpcstrings;
 {$endif}
 
@@ -37,7 +38,7 @@ const
  (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  mstr ,mstr ,mstr ,mbody,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil) ), {String}
  (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {Zahl}
  (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,maddr,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mflag,matchfkt(nil)), {ADDR}
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mbody,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil,matchfkt(nil)) ,matchfkt(nil)), {Flags}
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mbody,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil) ,matchfkt(nil)), {Flags}
 
  (matchfkt(nil) ,mstr ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)), {SUBJ}
  (matchfkt(nil) ,mstr ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)), {FROM}
@@ -57,8 +58,8 @@ const
  (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {DNODE}
  (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {DZONE}
 
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mflag  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil))  {Flag }
- (matchfkt(nil) ,mkludge ,matchfkt(nil) ,matchfkt(nil) ,matchfpkt(nil)  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil))  {Flag }
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mflag  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)),  {Flag }
+ (matchfkt(nil) ,mkludge , matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) , matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil))  {Flag }
 );
 	{$else}
 {                                **************STATIC TEXT********************************************************************

@@ -8,6 +8,7 @@ interface
 
 
 {$ifdef __GPC__}
+{$x+}
 uses gpcstrings,memman,gpcsmapi,erweiter;
 {$endif}
 
