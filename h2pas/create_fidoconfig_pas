@@ -1,0 +1,32 @@
+#/bin/bash
+echo Please wait!
+if [ ! -x h2pas ] 
+then
+	echo H2PAS-binary not found. Starting Compiler
+	ppc386 -v0 h2pas
+fi
+if [ ! -x h2pas ] 
+then
+	echo Cannot create h2pas-binary
+	exit 255
+fi
+if [ ! -s ../../fidoconfig/fidoconfig.h ] 
+then
+ echo Fidoconfig.h not found!
+ echo ../../fidoconfig/fidoconfig.h
+ exit 255
+fi
+
+rm -f h2pas.temp*
+grep -v -G 'typedef ' ../../fidoconfig/fidoconfig.h>h2pas.temp2
+./h2pas -u fidoconfig -p -l fidoconfig -s -o h2pas.temp h2pas.temp2
+cat h2pas.temp | sed --file fidoconfH2PAS >h2pas.temp2
+mv ../fidoconfig.pas ../fidoconfig.old
+cat h2pas.temp2>../fidoconfig.pas
+rm -f h2pas.temp*
+if [ -s ../fidoconfig.pas ]
+then
+	echo fidoconfig.pas created
+else
+	echo error while creating fidoconfig.pas
+fi

@@ -31,14 +31,14 @@ program ffma;
 
 {$ifdef fpc}
 	{$ifdef linux}
-     Uses ini,erweiter,strings,utils,fparser,memman,log,smapi,match,fidoconf,fidoconf2;
+     Uses ini,erweiter,strings,utils,fparser,memman,log,smapi,match,fidoconfig,fidoconf2;
 	{$endif}
 {$endif}
 
 
 const
 	configfile:string='/etc/fido/ffma.ini';
-	version='pre 0.05.03';
+	version='pre 0.05.04';
     compiler:string='Unknown';
 
 type
@@ -167,9 +167,9 @@ begin
  end;
 end;
 
-procedure doaction(p:paction;fcarea:psarea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;var num:longint;var del:boolean);forward;
+procedure doaction(p:paction;fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;var num:longint;var del:boolean);forward;
 
-procedure dodostatment(fcarea:psarea;area:pharea;nr:longint;mask:pmask);
+procedure dodostatment(fcarea:parea;area:pharea;nr:longint;mask:pmask);
 var
  del:boolean;
  msg:phmsg;
@@ -209,11 +209,11 @@ begin
  close(f);
 end;
 
-procedure actioncopy(farea:psarea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
+procedure actioncopy(farea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
 var
  destarea:pharea;
  destmsg:phmsg;
- destfcarea:psarea;
+ destfcarea:parea;
 
  ctrlbuf,textbuf:pchar;
  ctrlsize,textsize:longint;
@@ -236,20 +236,20 @@ begin
 
     textsize:=area^.f^.GetTextLen(msg);
     ctrlsize:=area^.f^.GetCtrlLen(msg);
-    textbuf:=getmemory(textsize);
-    ctrlbuf:=getmemory(ctrlsize);
+    textbuf:=getmemory(textsize+1);
+    ctrlbuf:=getmemory(ctrlsize+1);
     area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,ctrlsize,ctrlbuf);
     destmsg:=destarea^.f^.OpenMsg(destarea,MOPEN_CREATE,0);
     newnr:=destarea^.high_msg+1;
     destarea^.f^.WriteMsg(destmsg,0,xmsg,textbuf,textsize,textsize,ctrlsize,ctrlbuf);
     destarea^.f^.closemsg(destmsg);
-    freememory(textbuf);
-    freememory(ctrlbuf);
+    freememory(textbuf,true);
+    freememory(ctrlbuf,true);
     if p^.dostat<>nil then dodostatment(destfcarea,destarea,newnr,p^.dostat);
     destarea^.f^.closearea(destarea);
 end;
 
-procedure actionexportheader(fcarea:psarea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;ziel:string);
+procedure actionexportheader(fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;ziel:string);
 var
  f:text;
  s,t:string;
@@ -276,16 +276,15 @@ begin
     close(f);
 end;
 
-procedure actionexportmsg(fcarea:psarea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;ziel:string);
+procedure actionexportmsg(fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;ziel:string);
 var
  textbuf:pchar;
- textsize:longint;
+ textsize,i:longint;
  f:text;
  s,t:string;
- i:word;
 begin
     textsize:=area^.f^.GetTextLen(msg);
-    textbuf:=getmemory(textsize);
+    textbuf:=getmemory(textsize+1);
     area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,0,nil);
     assign(f,ziel);
     if not exist(ziel) then begin rewrite(f); close(f); end;
@@ -326,16 +325,17 @@ begin
     end;
     if not ((length(s)>0) and (s[1]=#1)) then writeln(f,s+t);
     close(f);
-    freememory(textbuf);
+    freememory(textbuf,true);
 end;
 
-procedure actionechocopy(fcarea:psarea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;a:paction);
+
+procedure actionechocopy(fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;a:paction);
 const
  deforigin=#$0d+'---'+#$0d+' * Origin: Default ';
 var
  destarea:pharea;
  destmsg:phmsg;
- destfcarea:psarea;
+ destfcarea:parea;
  ctrlbuf,textbuf:pchar;
  ctrlsize,textsize:longint;
  pp,ppp:pchar;
@@ -360,9 +360,10 @@ begin
     end;
     newnr:=destarea^.high_msg+1;
     textsize:=area^.f^.GetTextLen(msg);
-    textbuf:=getmemory(textsize+200);
+    textbuf:=getmemory(textsize+10000);
     ctrlbuf:=nil; ctrlsize:=0;
     area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,0,nil);
+	textbuf[textsize]:=#0;
     xmsg^.orig:=a^.addr;
     xmsg^.attr:=msglocal;
     pp:=psearch(textbuf,#$0d+'--- ');
@@ -370,6 +371,8 @@ begin
 
     pp:=psearchI(textbuf,#$0d+' * Origin: ');
     while pp<>nil do begin pp[2]:='+'; pp:=psearchI(textbuf,#$0d+' * Origin: '); end;
+
+	{Entfernung alle Kluges am Ende der Nachricht}
     repeat
       enter:=strrscan(textbuf,#$0d);
       if enter=nil then break;
@@ -381,16 +384,17 @@ begin
         kluge[0]:=#0;
       end else break;
     until false;
+
     textsize:=strlen(textbuf)+1;
     origin:=deforigin+'('+showaddr(xmsg^.orig)+')'#13'SEEN-BY: '+a^.seenby+#13#0;
     for i:=1 to length(origin) do begin textbuf[i+textsize-2]:=origin[i]; end;
     inc(textsize,length(origin)-1);
     destmsg:=destarea^.f^.OpenMsg(destarea,MOPEN_CREATE,0);
-    destarea^.f^.WriteMsg(destmsg,0,xmsg,textbuf,textsize,textsize,0,ctrlbuf);
+    destarea^.f^.WriteMsg(destmsg,0,xmsg,textbuf,strlen(textbuf),strlen(textbuf),0,ctrlbuf);
     destarea^.f^.closemsg(destmsg);
+    freememory(textbuf,true);
     if a^.dostat<>nil then dodostatment(destfcarea,destarea,newnr,a^.dostat);
     destarea^.f^.closearea(destarea);
-    freememory(textbuf);
 end;
 
 function createkluges(orig,dest:netaddr;createmsgid:boolean):pchar;
@@ -408,7 +412,7 @@ begin
  if orig.point<>0 then begin
   s:=s+#1+'FMPT '+z2s(orig.point);
  end;
- p:=getmemory(length(s));
+ p:=getmemory(length(s)+1);
  strpcopy(p,s);
  createkluges:=p;
 end;
@@ -467,15 +471,15 @@ begin
  end;
  textbuf:=p;
  textsize:=x;
- freememory(org);
+ freememory(org,true);
 end;
 
 
-procedure actionbounce(fcarea:psarea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
+procedure actionbounce(fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
 var
  f:file;
  destarea:pharea;
- destfcarea:psarea;
+ destfcarea:parea;
  xmsgnew:pxmsg;
  msgnew:phmsg;
  textsize:longint;
@@ -541,16 +545,16 @@ begin
   end;
   if (p^.spe and actionbouncefullmessage)<>0 then begin
     msgsize:=area^.f^.GetTextLen(msg);
-    msgbuf:=getmemory(msgsize);
+    msgbuf:=getmemory(msgsize+1);
     area^.f^.ReadMsg(msg,nil,0,msgsize,msgbuf,0,nil);
     destarea^.f^.WriteMsg(destmsg,0,xmsgnew,textbuf,textsize-1,textsize+msgsize,strlen(ctrlbuf),ctrlbuf);
     destarea^.f^.WriteMsg(destmsg,1,xmsgnew,msgbuf,msgsize,textsize+msgsize,0,nil);
-    freememory(msgbuf);
+    freememory(msgbuf,true);
   end else begin
     destarea^.f^.WriteMsg(destmsg,0,xmsgnew,textbuf,textsize,textsize,strlen(ctrlbuf),ctrlbuf);
   end;
-  freememory(textbuf);
-  freememory(ctrlbuf);
+  freememory(textbuf,true);
+  freememory(ctrlbuf,true);
   destarea^.f^.closemsg(destmsg);
   dispose(xmsgnew);
   if p^.dostat<>nil then dodostatment(destfcarea,destarea,newnr,p^.dostat);
@@ -559,7 +563,7 @@ begin
   end;
 end;
 
-procedure actionrewrite(var fcara:psarea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
+procedure actionrewrite(var fcara:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
 var
  s:string;
  i:word;
@@ -586,7 +590,7 @@ begin
  actionrewriteFromAddr,actionrewriteToaddr:begin
                          textsize:=area^.f^.GetTextLen(msg);
                          ctrlsize:=area^.f^.GetCtrlLen(msg);
-                         textbuf:=getmemory(textsize);
+                         textbuf:=getmemory(textsize+1);
                          ctrlbuf:=getmemory(ctrlsize+1000);
                          area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,ctrlsize,ctrlbuf);
                          area^.f^.closemsg(msg);
@@ -603,17 +607,17 @@ begin
                            xmsg^.dest:=p^.addr;
                          end;
                          pp:=createkluges(o,d,false);
-                         ppp:=getmemory(strlen(ctrlbuf)+strlen(pp));
+                         ppp:=getmemory(strlen(ctrlbuf)+strlen(pp)+1);
                          strcopy(ppp,pp);
                          strcat(ppp,ctrlbuf);
                          msg:=area^.f^.OpenMsg(area,MOPEN_CREATE,num);
                          area^.f^.WriteMsg(msg,0,xmsg,textbuf,textsize,textsize,strlen(ppp),ppp);
                          area^.f^.closemsg(msg);
                          msg:=area^.f^.OpenMsg(area,MOPEN_READ,num);
-                         freememory(textbuf);
-                         freememory(ctrlbuf);
-                         freememory(ppp);
-                         freememory(pp);
+                         freememory(textbuf,true);
+                         freememory(ctrlbuf,true);
+                         freememory(ppp,true);
+                         freememory(pp,true);
                        end;
  actionrewriteSubj:begin
                          s:=copy(p^.str,1,72); while length(s)<72 do s:=S+#0;
@@ -638,7 +642,7 @@ begin
  close(f);
 end;
 
-procedure doaction(p:paction;fcarea:psarea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;var num:longint;var del:boolean);
+procedure doaction(p:paction;fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;var num:longint;var del:boolean);
 begin
  del:=false;
  while p<>nil do begin
@@ -690,7 +694,7 @@ Var
  anz:longint;
  del:boolean;
  uid:longint;
- a:psarea;
+ a:parea;
 begin
  l:=liste;
  while l<>nil do begin
@@ -834,7 +838,7 @@ Var
  area:pharea;
  l:pliste;
  anz:longint;
- fcarea:psarea;
+ fcarea:parea;
 begin
  l:=liste;
  while l<>nil do begin
@@ -884,6 +888,7 @@ begin
  logit(9,'Copyright by Sven Bursch, Germany  1998-1999');
  logit(9,'FFMA comes with ABSOLUTELY NO WARRANTY. See COPYING');
  logit(9,'');
+ logit(9,z2s(memavail));
  checkpara;
  readini(configfile,fc);
 
@@ -908,5 +913,6 @@ begin
 
  {Cleanup}
  shownotfree;
+ logit(9,z2s(memavail));
  logit(3,'Normal exit');
 end.

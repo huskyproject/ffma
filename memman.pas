@@ -3,7 +3,7 @@ unit memman;
 interface
 
 function getmemory(size:longint):pointer;
-procedure freememory(p:pointer);
+procedure freememory(var p:pointer;doit:boolean);
 procedure shownotfree;
 
 implementation
@@ -22,12 +22,16 @@ var
  p:pointer;
  x:pliste;
 begin
+ if size<1 then begin writeln('Getmemory Size: ',size); end;
  getmem(p,size);
  new(x);
+ if p=nil then begin writeln('Getmem failed!'); halt; end;
+ if x=nil then begin writeln('new(x) in getmemory failed!'); halt; end;
  x^.p:=p;
  x^.size:=size;
- x^.next:=l;
- l:=x;
+ x^.next:=l^.next;
+
+ l^.next:=x;
  getmemory:=p;
 end;
 
@@ -36,7 +40,7 @@ var
  x:pliste;
  ll:longint;
 begin
- x:=l;
+ x:=l^.next;
  ll:=0;
  while x<>nil do begin
   writeln('Not free',x^.size);
@@ -46,33 +50,37 @@ begin
  if ll<>0 then writeln('Together: ',ll);
 end;
 
-procedure freememory(p:pointer);
+procedure freememory(var p:pointer;doit:boolean);
 var
- x:pliste;
+ x,y:pliste;
  t:pliste;
 begin
- if l=nil then exit;
- if l^.p=p then begin
-   freemem(p,l^.size);
-   x:=l;
-   l:=l^.next;
-   dispose(x);
-   exit;
- end;
- x:=l;
- while x^.next<>Nil do begin
-  if x^.next^.p=p then begin
-    freemem(p,x^.next^.size);
-    t:=x^.next;
-    x^.next:=x^.next^.next;
-    dispose(t);
+ if p=nil then begin writeln('FREEMEMORY: NOT FOUND (NIL)'); exit; end;
+ x:=l^.next;
+ y:=l;
+ while x<>Nil do begin
+  if x^.p=p then begin
+	if doit then begin
+{			fillchar(p^,x^.size,0)}
+			freemem(p,x^.size);
+	end;
+	y^.next:=x^.next;
+    dispose(x);
+	p:=nil;
     exit;
   end;
   x:=x^.next;
+  y:=y^.next;
  end;
  writeln('FREEMEMORY: NOT FOUND');
 end;
 
+var
+ x:pliste;
 begin
- l:=nil;
+ new(x);
+ x^.size:=999999999;
+ x^.p:=nil;
+ x^.next:=nil;
+ l:=x;
 end.

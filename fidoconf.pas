@@ -158,6 +158,7 @@ interface
           max : dword;
           dupeSize : dword;
           dupeHistory : dword;
+		  keepunread,killread:char;
           dupeCheck : edupeCheck;
           tinySB : char;
           manual : char;
@@ -169,12 +170,13 @@ interface
           levelwrite : dword;
           dupes : pointer;
           newDupes : pointer;
-          imported : char;
+          imported : dword;
           group : char;
           rwgrp : Pchar;
           wgrp : Pchar;
           rgrp : Pchar;
-          ccoff : longint;
+          ccoff : cardinal;
+          uid,gid,perm:dword;		  
           keepsb : longint;
           scn : longint;
        end;
@@ -265,9 +267,10 @@ interface
           semaDir : Pchar;
           badFilesDir : Pchar;
           loglevels : Pchar;
-          netMailArea : sarea;
           dupeArea : sarea;
           badArea : sarea;
+		  netmailareacount:cardinal;
+		  netmailareas:psarea;	
           echoAreaCount : dword;
           echoAreas : Psarea;
           localAreaCount : dword;

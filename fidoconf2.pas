@@ -9,40 +9,47 @@ uses gpcstrings,gpcfidoconf;
 
 {$ifdef fpc}
 	{$ifdef linux}
-    uses fidoconf,strings;
+    uses fidoconfig,strings;
 	{$endif}
 {$endif}
 
 
 {Improved getarea}
-function Getareaimp(config:psfidoconfig; areaName:pchar):Psarea;
+function Getareaimp(config:psfidoconfig; areaName:pchar):Parea;
 
 implementation
 
-function Getareaimp(config:psfidoconfig; areaName:pchar):Psarea;
+function Getareaimp(config:psfidoconfig; areaName:pchar):Parea;
 type
- area_array=array[1..100000] of sarea;
+ area_array=array[1..10000] of area;
  Parea_array=^area_array;
 var 
- a:psarea;
+ a:parea;
  aa:parea_array;
  i:integer;
  p:pointer;
 begin
 {Netmailarea?}
+{$ifdef __GPC__}
+	aa:=parea_array(config^.netmailareas^);  
+{$else}
+	aa:=addr(config^.netmailareas^);
+{$endif}
+
 if stricomp(areaname,'netmailarea')=0 then begin
-	getareaimp:=@config^.netmailarea;
+	getareaimp:=@aa^[1];
     exit;
 end;
 
-if stricomp(areaname,config^.netmailarea.areaname)=0 then begin
-	getareaimp:=@config^.netmailarea;
+if stricomp(areaname,aa^[1].areaname)=0 then begin
+	getareaimp:=@aa^[1];
     exit;
 end;
 
 {normal area?}
 a:=getarea(config,areaname);
 if a=@config^.badarea then a:=nil;
+if a=@config^.dupearea then a:=nil;
 
 {localarea}
 if a=nil then begin

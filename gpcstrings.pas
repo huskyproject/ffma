@@ -37,6 +37,7 @@ var
  x:word;
  s:string;
 begin
+	if str=nil then begin strpas:=''; exit; end;
 	x:=0;
  	s:='';
 	while str[x]<>#0 do begin

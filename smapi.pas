@@ -161,7 +161,7 @@ type
        f:pfkt;
 
 {    void *apidata;}
-        dummy:array[1..20000] of char;
+        dummy:array[1..20000] of char; {very bad}
       end;
 
 function MsgOpenApi(_minf:p_minf):byte; cdecl; {return 0 if OK}

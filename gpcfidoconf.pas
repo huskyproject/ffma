@@ -161,6 +161,7 @@ type
           max : dword;
           dupeSize : dword;
           dupeHistory : dword;
+          keepunread,killread:char;
           dupeCheck : edupeCheck;
           tinySB : char;
           manual : char;
@@ -172,12 +173,13 @@ type
           levelwrite : dword;
           dupes : pointer;
           newDupes : pointer;
-          imported : char;
+          imported : dword;
           group : char;
           rwgrp : Pchar;
           wgrp : Pchar;
           rgrp : Pchar;
-          ccoff : longint;
+          ccoff : cardinal;
+          uid,gid,perm:dword;
           keepsb : longint;
           scn : longint;
        end;
@@ -269,9 +271,10 @@ type
           semaDir : Pchar;
           badFilesDir : Pchar;
           loglevels : Pchar;
-          netMailArea : sarea;
           dupeArea : sarea;
           badArea : sarea;
+          netmailareacount:cardinal;
+          netmailareas:psarea;
           echoAreaCount : dword;
           echoAreas : Psarea;
           localAreaCount : dword;

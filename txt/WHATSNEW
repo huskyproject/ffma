@@ -8,6 +8,8 @@
 !gelegentlich wurde die UID nicht korrekt ermittelt und 0 abgespeichert
  (Bugreport by Ingo Korb)
 !getareaimp wurde nicht benutzt
+-Anpassung an die aktuelle Fidoconfigversion.
+!Exportmsg: run-time-error 201 bei leerer Nachricht
 
 0.05.02 --- 20.09.99
 ====================

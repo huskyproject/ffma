@@ -179,7 +179,6 @@ begin
  if x^.ele='=' then mflag:=(att and myflag)<>0;
  if x^.ele='%' then mflag:=(att and myflag)=0;
 end;
-
 function mbody(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;
 var
  s:string;
@@ -210,8 +209,8 @@ begin
  b:=psearchi(p,pp)<>nil;
  if not_ then b:=not b;
  mbody:=b;
- freememory(p);
- freememory(pp);
+ freememory(p,true);
+ freememory(pp,true);
 end;
 
 function maddr(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;
@@ -295,6 +294,10 @@ var
  c,b:boolean;
 begin
  match_:=false;
+ if x=nil then begin
+	writeln('ERROR: x=nil in match_');
+	halt;
+ end;
  if x^.ele[1] in ['|','&'] then begin
     b:=match_(area,msg,xmsg,x^.l);
     c:=match_(area,msg,xmsg,x^.r);

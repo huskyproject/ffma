@@ -1,0 +1,8 @@
+Mit Hilfe des Skriptes create_fidoconfig_pas kann aus der fidoconfig.h
+ein Pascal-Unit erzeugt werden, das auf die fidoconfig library zugreifen 
+kann.
+Das Skript ist nur notwendig, wenn sie etwas am Interface-Teil der 
+fidoconifg library geändert hat.
+
+h2pas ist Bestandteil von fpc-Pascal. Diese Version von h2pas ist von mir
+verändert wordern.

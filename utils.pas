@@ -139,7 +139,7 @@ begin
    end;
  end;
  ziel[j]:=#0;
- freememory(p);
+ freememory(p,true);
  size:=j-1;
  p:=ziel;
 end;

@@ -13,7 +13,7 @@ interface
 
 {$ifdef fpc}
 	{$ifdef linux}
-	uses fparser,utils,erweiter,strings,log,smapi,memman,fidoconf,fidoconf2;
+	uses fparser,utils,erweiter,strings,log,smapi,memman,fidoconfig,fidoconf2;
 	{$define havedosunit}
 	{$endif}
 {$endif}
@@ -218,7 +218,7 @@ end;
 
 function msgbase(s:string;p:paction;fc:psfidoconfig):boolean;
 var
- area:psarea;
+ area:parea;
 begin
  getmem(p^.msgbase,length(copy(s,4,255))+1);
  StrPCopy(p^.msgbase,copy(s,4,255));
@@ -239,15 +239,15 @@ end;
 procedure split(s:String;var x:Stringarray);
 var
  i:byte;
- a,b:word;
+ a,b:integer;
  t:string;
 begin
   t:=s;
   fillchar(x,sizeof(x),0);
   for i:=1 to 20 do begin
     s:=killspaceae(s)+' ';
-    a:=pos(' ',s)-1;
-    b:=pos('"',s)-1;
+    a:=pos(' ',s)-1; if a=-1 then a:=30000;
+    b:=pos('"',s)-1; if b=-1 then b:=30000;
     if a<b then begin
       x[i]:=copy(s,1,pos(' ',s)-1);
       delete(s,1,pos(' ',s));
@@ -305,7 +305,7 @@ end;
 
 procedure readini(filename:string;fc:psfidoconfig);
 type
-        tarea_array=array[1..maxint] of sarea;
+        tarea_array=array[1..maxint] of area;
         Parea_array=^tarea_array;
 const
  inmask:boolean=false;
