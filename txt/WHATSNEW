@@ -2,7 +2,11 @@
 -Changes
 !Bugfix
 
-0.06.02 --- 24.03.00 (sb)
+0.06.03 --- 25.04.00 (sb)
+=========================
+! try to fix the locking-Problem
+
+0.06.02 --- 24.04.00 (sb)
 ==========================
 + exportmsg and exportheader supports directories. 
   Files with unique names are created.
