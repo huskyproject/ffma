@@ -34,30 +34,30 @@ endif
 all: ffma$(EXE)
 
 ifdef H2PAS
-fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
+fconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 ifeq ($(PC), gpc)
 	cat $(INCDIR)/fidoconf/fidoconf.h \
 	 | grep -v "^.define strend" \
 	 | awk 'BEGIN { cpp=0; } { if (($$1 == "#ifdef") && ($$2 == "__cplusplus")) { cpp=1; } else if (($$1 == "#endif") && (cpp == 1)) { cpp=0; } else if (cpp == 1) { printf "\n" } else { print; } }' > fidoconf.h
-	h2pas -u fidoconf -p -l fidoconfig -s -d -o /dev/stdout \
+	h2pas -u fconf -p -l fidoconfig -s -d -o /dev/stdout \
 	 fidoconf.h | sed -e 's/\^char/pchar/g' \
 	 -e 's/\^Double;/\^Double; PFile = ^File; PPChar = ^PChar;/' \
 	| grep -v '^{$$include' \
 	| grep -v "^[^']*';$$" \
 	| grep -v "^ *var$$" \
 	| sed 's/cdecl;//g' \
-	> fidoconf.pas
+	> fconf.pas
 else
 	cat $(INCDIR)/fidoconf/fidoconf.h \
 	 | grep -v "^.define strend" \
 	 | awk 'BEGIN { cpp=0; } { if (($$1 == "#ifdef") && ($$2 == "__cplusplus")) { cpp=1; } else if (($$1 == "#endif") && (cpp == 1)) { cpp=0; } else if (cpp == 1) { printf "\n" } else { print; } }' > fidoconf.h
-	h2pas -u fidoconf -p -l fidoconfig -s -d -o /dev/stdout \
+	h2pas -u fconf -p -l fidoconfig -s -d -o /dev/stdout \
 	 fidoconf.h | sed -e 's/\^char/pchar/g' \
 	 -e 's/\^Double;/\^Double; PFile = ^File; PPChar = ^PChar;/' \
 	| grep -v '^{$$include' \
 	| grep -v "^[^']*';$$" \
 	| grep -v "^ *var$$" \
-	> fidoconf.pas
+	> fconf.pas
 endif
 endif
 
@@ -65,19 +65,19 @@ endif
 	$(PC) $(POPT) $(PCOPT) $*.pas
 
 ifeq ($(PC), ppc386)
-fidoconf2.pas: fidoconf$(OBJ)
+fidoconf2.pas: fconf$(OBJ)
 else
-fidoconf2.pas: gpcstrings$(OBJ) fidoconf$(OBJ)
+fidoconf2.pas: gpcstrings$(OBJ) fconf$(OBJ)
 endif
 
 ifeq ($(PC), ppc386)
 ffma$(EXE): fidoconf2$(OBJ) erweiter$(OBJ) fparser$(OBJ) memman$(OBJ) \
-            utils$(OBJ) log$(OBJ) ini$(OBJ) match$(OBJ) fidoconf$(OBJ) \
+            utils$(OBJ) log$(OBJ) ini$(OBJ) match$(OBJ) fconf$(OBJ) \
             smapi$(OBJ) ffma.pas
 	$(PC) $(POPT) $(LOPT) ffma.pas
 else
 ffma$(EXE): fidoconf2$(OBJ) erweiter$(OBJ) fparser$(OBJ) memman$(OBJ) \
-            utils$(OBJ) log$(OBJ) ini$(OBJ) match$(OBJ) fidoconf$(OBJ) \
+            utils$(OBJ) log$(OBJ) ini$(OBJ) match$(OBJ) fconf$(OBJ) \
             gpcsmapi$(OBJ) ffma.pas
 	$(PC) $(POPT) $(LOPT) ffma.pas
 endif

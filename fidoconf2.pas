@@ -4,12 +4,12 @@ interface
 
 
 {$ifdef __GPC__}
-uses gpcstrings,fidoconf;
+uses gpcstrings,fconf;
 {$endif}
 
 {$ifdef fpc}
 	{$ifdef linux}
-    uses fidoconf,strings;
+    uses fconf,strings;
 	{$endif}
 {$linklib fidoconfig}
 {$endif}
