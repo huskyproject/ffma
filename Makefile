@@ -20,7 +20,7 @@ else
 endif
 else
 ifeq ($(PC), ppc386)
-  POPT = -v0 -XS -Co -Ci -Cr -Ct -dPASCAL
+  POPT = -g -v0 -XS -Co -Ci -Cr -Ct -dPASCAL
   LOPT = -Fl$(LIBDIR)
   PCOPT =
 else

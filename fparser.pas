@@ -39,10 +39,10 @@ type
 const
 	rep:replacearray=((orig:'\\';repl:'\'),(orig:'\1';repl:#1));
 var
-	i:word;
+	i:integer;
+	wert:word;
 	position:word;
 begin
-{	writeln('Vor: ',s);}
 	for i:=1 to high(rep) do begin
 		while pos(rep[i].orig,s)>0 do begin
 			position:=pos(rep[i].orig,s);
@@ -50,7 +50,14 @@ begin
 			insert(rep[i].repl,s,position);
 		end;
 	end;
-{	writeln('Nach: ',s);}
+	for i:=1 to length(s)-3 do
+	begin
+		if (s[i]='\') and (s[i+1] in ['0'..'9']) and (s[i+2] in ['0'..'9']) and (s[i+3] in ['0'..'9']) then begin
+			wert:=s2z(s[i+1]+s[i+2]+s[i+3]);
+			delete(s,i,4);
+			insert(char(wert),s,i);
+		end;
+	end;
 	unescape:=s;
 end;
 

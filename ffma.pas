@@ -2,7 +2,7 @@ program ffma;
 {
     FFMA FreeFidoMessageAssistant
 
-    Copyright (C) 1998-1999 Sven Bursch
+    Copyright (C) 1998-2000 Sven Bursch
 
 	Fido:     2:2448/820
 	Internet: sb100@uni-duisburg.de
@@ -38,7 +38,7 @@ program ffma;
 
 const
 	configfile:string='/etc/fido/ffma.ini';
-	version='0.06.04';
+	version='0.08.00';
     compiler:string='Unknown';
 
 type
@@ -259,8 +259,8 @@ begin
 
     textsize:=area^.f^.GetTextLen(msg);
     ctrlsize:=area^.f^.GetCtrlLen(msg);
-    textbuf:=getmemory(textsize);
-    ctrlbuf:=getmemory(ctrlsize);
+    textbuf:=getmemory(textsize+1);
+    ctrlbuf:=getmemory(ctrlsize+1);
     area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,ctrlsize,ctrlbuf);
     destmsg:=destarea^.f^.OpenMsg(destarea,MOPEN_CREATE,0);
     newnr:=destarea^.high_msg+1;
@@ -315,7 +315,7 @@ var
  filename:string;
 begin
     textsize:=area^.f^.GetTextLen(msg);
-    textbuf:=getmemory(textsize);
+    textbuf:=getmemory(textsize+1);
     area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,0,nil);
 	if isdir(ziel) then begin
 		filename:=uniqfilename(ziel);
@@ -974,10 +974,10 @@ begin
 		configfile:=getConfigFileNameForProgram('FFMA','ffma.ini');
 	 end;
 
-	 logit(9,'FreeFidoMessageAssistant '+version+' '+compiler);
-	 logit(9,'Copyright by Sven Bursch, Germany  1998-1999');
-	 logit(9,'FFMA comes with ABSOLUTELY NO WARRANTY. See COPYING');
-	 logit(9,'');
+	 logit(2,'FreeFidoMessageAssistant '+version+' '+compiler);
+	 logit(2,'Copyright by Sven Bursch, Germany  1998-1999');
+	 logit(2,'FFMA comes with ABSOLUTELY NO WARRANTY. See COPYING');
+	 logit(2,'');
 	 logit(0,'Memory: '+z2s(memavail)+'  Configfile: '+configfile);
 
 	 checkpara;
