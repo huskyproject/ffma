@@ -1,8 +1,5 @@
 unit ini;
-
- {
-
- }
+{$i-}
 
 
 interface
@@ -30,6 +27,7 @@ type
          maskname:string[50];
          search: pfparserknoten;
          action:paction;
+		 hits:longint;
          next:pmask;
        end;
  taction=record
@@ -326,7 +324,7 @@ var
 begin
  assign(f,filename);
  reset(f);
- if ioresult<>0 then begin logit(9,'ffma.ini not found'); halt; end;
+ if ioresult<>0 then begin logit(9,filename+' not found'); halt; end;
  line:=0;
  p:=nil;
  while not eof(f) do begin
@@ -344,6 +342,7 @@ begin
    if up(copy(s,1,9))='BEGINMASK' then begin
        if inmask then begin logit(9,'Line '+z2s(line)+' endMask missing'); halt; end;
        new(p);
+		p^.hits:=0;
        p^.maskname:=killspaceae(copy(s,10,255));
        if p^.maskname='' then begin logit(9,'Line '+z2s(line)+' Maskname missing'); halt; end;
        if findmask(p^.maskname,liste)<>nil then begin logit(9,'Line '+z2s(line)+' Maskname '+p^.maskname+' already used'); halt; end;

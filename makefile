@@ -24,7 +24,10 @@ nothing-specified:
 	@echo ""
 
 linux: ffma.pas
-	make -f makefile.fpc
+	make -f makefile.fpc linux
+
+linuxdebug: ffma.pas
+	make -f makefile.fpc linuxdebug
 
 linux-install: linux
 	install -s ffma $(INSTBINDIR)

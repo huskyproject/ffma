@@ -17,7 +17,7 @@ interface
 
 const
  showlevel:word=5;
- loglevel:word=0;
+ loglevel:word=3;
 
 procedure Logit(pri:word;t:string);
 procedure Openlogfile(s:string);
@@ -93,5 +93,8 @@ begin
 	{$else}
 	exitsave:=exitproc;
 	exitproc:=@logexit;
+	{$endif}
+	{$ifdef debugit}
+	loglevel:=0;
 	{$endif}
 end.

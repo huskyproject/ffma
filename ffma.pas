@@ -1,4 +1,3 @@
-
 program ffma;
 {
     FFMA FreeFidoMessageAssistant
@@ -38,7 +37,7 @@ program ffma;
 
 const
 	configfile:string='/etc/fido/ffma.ini';
-	version='pre 0.05.04';
+	version='pre 0.05.05';
     compiler:string='Unknown';
 
 type
@@ -54,6 +53,7 @@ const
  uidlisteout:puid=nil;
 
 var
+ ffmauid:string;
  fc:psfidoconfig;
  para:record
         debug:boolean;
@@ -106,14 +106,14 @@ var
 begin
 {$i-}
 logit(1,'Entering WriteUidToFile');
-assign(f,'ffma.uid');
+assign(f,ffmauid);
 {$ifdef __GPC__}
 rewrite(f);
 {$else}
 rewrite(f,1);
 {$endif}
 err:=ioresult;
-if err<>0 then begin logit(9,'Error while opening ffma.uid: '+geterrortext(err)); halt; end;
+if err<>0 then begin logit(9,'Error while opening '+ffmauid+': '+geterrortext(err)); halt; end;
 while l<>nil do begin
 	fillchar(x,sizeof(x),0);
 	x.msgbase:=l^.msgbase;
@@ -121,12 +121,12 @@ while l<>nil do begin
 	logit(1,'Saving: Msgbase: '+l^.msgbase+' UID: '+z2s(l^.uid));
 	write(f,x);
 	err:=ioresult;
-	if err<>0 then begin logit(9,'Error while writing ffma.uid: '+geterrortext(err)); halt; end;
+	if err<>0 then begin logit(9,'Error while writing '+ffmauid+': '+geterrortext(err)); halt; end;
 	l:=l^.next;
 end;
 close(f);
 err:=ioresult;
-if err<>0 then begin logit(9,'Error while closing ffma.uid: '+geterrortext(err)); halt; end;
+if err<>0 then begin logit(9,'Error while closing '+ffmauid+': '+geterrortext(err)); halt; end;
 logit(1,'Leaving WriteUidToFile');
 end;
 
@@ -136,7 +136,7 @@ var
  f:file of fileuid;
  io:word;
 begin
- assign(f,'ffma.uid');
+ assign(f,ffmauid);
  {$ifdef __GPC__}
  reset(f);
  {$else}
@@ -145,7 +145,7 @@ begin
  io:=ioresult;
  if io=2 then exit;
  if io<>0 then begin
-  logit(9,'Can not read File `ffma.uid`');
+  logit(9,'Can not read File `'+ffmauid+'`');
   halt;
  end;
  while not eof(f) do begin
@@ -236,8 +236,8 @@ begin
 
     textsize:=area^.f^.GetTextLen(msg);
     ctrlsize:=area^.f^.GetCtrlLen(msg);
-    textbuf:=getmemory(textsize+1);
-    ctrlbuf:=getmemory(ctrlsize+1);
+    textbuf:=getmemory(textsize);
+    ctrlbuf:=getmemory(ctrlsize);
     area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,ctrlsize,ctrlbuf);
     destmsg:=destarea^.f^.OpenMsg(destarea,MOPEN_CREATE,0);
     newnr:=destarea^.high_msg+1;
@@ -284,7 +284,7 @@ var
  s,t:string;
 begin
     textsize:=area^.f^.GetTextLen(msg);
-    textbuf:=getmemory(textsize+1);
+    textbuf:=getmemory(textsize);
     area^.f^.ReadMsg(msg,xmsg,0,textsize,textbuf,0,nil);
     assign(f,ziel);
     if not exist(ziel) then begin rewrite(f); close(f); end;
@@ -340,7 +340,8 @@ var
  ctrlsize,textsize:longint;
  pp,ppp:pchar;
  kluge,enter:pchar;
- ORIGIN:string;
+ ORIGIN:pchar;
+ s:string;
  I:longint;
  newnr:longint;
 begin
@@ -386,13 +387,17 @@ begin
     until false;
 
     textsize:=strlen(textbuf)+1;
-    origin:=deforigin+'('+showaddr(xmsg^.orig)+')'#13'SEEN-BY: '+a^.seenby+#13#0;
-    for i:=1 to length(origin) do begin textbuf[i+textsize-2]:=origin[i]; end;
-    inc(textsize,length(origin)-1);
+	s:=deforigin+'('+showaddr(xmsg^.orig)+')'#13'SEEN-BY: '+a^.seenby+#13#0;
+	origin:=getmemory(length(s)+1);
+	strpcopy(origin,s);
+
+	strcat(textbuf,origin);
+
     destmsg:=destarea^.f^.OpenMsg(destarea,MOPEN_CREATE,0);
     destarea^.f^.WriteMsg(destmsg,0,xmsg,textbuf,strlen(textbuf),strlen(textbuf),0,ctrlbuf);
     destarea^.f^.closemsg(destmsg);
     freememory(textbuf,true);
+	freememory(origin,true);
     if a^.dostat<>nil then dodostatment(destfcarea,destarea,newnr,a^.dostat);
     destarea^.f^.closearea(destarea);
 end;
@@ -729,6 +734,7 @@ begin
     end else begin
        logit(2,'No UID for Area '+strpas(l^.msgbase)+'. Starting at Msg 1');
     end;
+
     {Scanning}
     if anz<num then begin writeln('No new messages to scan'); end;
     while num<=anz do begin
@@ -746,6 +752,7 @@ begin
       while (mask<>nil) and (del=false) do begin
          if mask^.search=nil then begin writeln('no search statment for ',mask^.maskname); halt; end;
          if match_(area,msg,xmsg,mask^.search)  then begin
+			inc(mask^.hits);
             logit(4,'Message '+z2s(num)+'/'+z2s(anZ)+' '+array2string(xmsg^.subj,72)+' matchs to  '+mask^.maskname);
             if not para.test then doaction(mask^.action,a,area,msg,xmsg,num,del);
          end;
@@ -772,6 +779,33 @@ begin
     area^.f^.closearea(area);
     l:=l^.next;
  end;
+end;
+
+procedure Statistic;
+Var
+ no:boolean;
+ l:pliste;
+ mask:pmask;
+ s:string;
+ loglevel:byte;
+begin
+ logit(4,'Statistics:');
+ l:=liste;
+ no:=true;
+ while l<>nil do begin
+      mask:=l^.mask;
+      while (mask<>nil) do begin
+		if mask^.hits=0 then begin
+			loglevel:=2;
+		end else begin
+			loglevel:=4; no:=false;
+		end;
+		logit(loglevel,'   '+mask^.maskname+' ('+l^.msgbase+') : '+z2s(mask^.hits));
+    	mask:=mask^.next;
+      end;
+	  l:=l^.next;
+ end;
+ if no then logit(4,'   none');
 end;
 
 procedure help;
@@ -866,31 +900,46 @@ var
  list:pliste;
  mask:pmask;
  ok:boolean;
+ i:longint;
 begin
- ok:=false;
- {$ifdef FPC}{$ifdef LINUX} ok:=true; compiler:='FPC/LINUX'; {$endif}{$endif}
- {$ifdef __GPC__} 
-	writeln('Warning!'); 
-	writeln('This version of FFMA is compiled with GPC.'); 
-	writeln('Maybe this version does not work correct! Be careful!');
-	writeln;
-	writeln('Press enter to continue');
-	readln;
-	compiler:='GPC';
-	ok:=true; 
- {$endif}
- if not ok then begin
- 	writeln('Please do not use FFMA under this OS!'); halt;
- end;
- fc:=readconfig;
- openlogfile(strpas(fc^.logfiledir)+'ffma.log');
- logit(9,'FreeFidoMessageAssistant '+version+' '+compiler);
- logit(9,'Copyright by Sven Bursch, Germany  1998-1999');
- logit(9,'FFMA comes with ABSOLUTELY NO WARRANTY. See COPYING');
- logit(9,'');
- logit(0,z2s(memavail));
- checkpara;
- readini(configfile,fc);
+	ok:=false;
+	randomize;
+    {$ifdef FPC}{$ifdef LINUX} ok:=true; compiler:='FPC/LINUX'; {$endif}{$endif}
+	{$ifdef __GPC__} 
+		writeln('Warning!'); 
+		writeln('This version of FFMA is compiled with GPC.'); 
+		writeln('Maybe this version does not work correct! Be careful!');
+		writeln;
+		writeln('Press enter to continue');
+		readln;
+		compiler:='GPC';
+		ok:=true; 
+	 {$endif}
+
+	 if not ok then begin
+	 	writeln('Please do not use FFMA under this OS!'); halt(255);
+	 end;
+
+	 fc:=readconfig;
+	 openlogfile(strpas(fc^.logfiledir)+'ffma.log');
+	 if getConfigFileNameForProgram('FFMA','ffma.ini')<>nil then begin
+		configfile:=getConfigFileNameForProgram('FFMA','ffma.ini');
+	 end;
+
+	 logit(9,'FreeFidoMessageAssistant '+version+' '+compiler);
+	 logit(9,'Copyright by Sven Bursch, Germany  1998-1999');
+	 logit(9,'FFMA comes with ABSOLUTELY NO WARRANTY. See COPYING');
+	 logit(9,'');
+	 logit(0,'Memory: '+z2s(memavail)+'  Configfile: '+configfile);
+
+	 checkpara;
+	 readini(configfile,fc);
+	 ffmauid:=getConfigFileName;
+	 for i:=length(ffmauid) downto 1 do begin
+		if ffmauid[i] in ['\','/'] then break;
+		delete(ffmauid,i,1);
+	 end;
+	ffmauid:=ffmauid+'ffma.uid';
 
  {Open Smapi}
  new(m); m^.req_version:=0; m^.def_zone:=2;
@@ -900,8 +949,10 @@ begin
  if para.scannew then loaduid;
 
  {Scaning}
- if para.scannew or para.scanall or para.test then scan(fc);
-
+ if para.scannew or para.scanall or para.test then begin
+	scan(fc);
+	statistic; 
+ end;	
  {Storing UID}
  if para.saveuid then storeuid_;
 

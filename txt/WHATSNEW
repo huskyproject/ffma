@@ -2,13 +2,22 @@
 -Changes
 !Bugfix
 
-0.05.03 --- not released yet
+0.05.05 --- not yet released
 ============================
++Statistics
+!run-time-error 2 if ffma.ini not exists.
+-ffma.uid is created in the directory, where your Fidoconfig was found.
+ move your existing ffma.uid into this direcotry (normally /etc/fido)
+
+0.05.04 --- 20.11.99
+====================
+-Anpassung an die aktuelle Fidoconfigversion
+ Es wird jetzt eine Version vom 24. Okt oder neuer benötigt.
+ Fidoconfig 0.9 funktioniert nicht!
 !ffma.uid wurde nicht immer gespeichert
 !gelegentlich wurde die UID nicht korrekt ermittelt und 0 abgespeichert
  (Bugreport by Ingo Korb)
 !getareaimp wurde nicht benutzt
--Anpassung an die aktuelle Fidoconfigversion.
 !Exportmsg: run-time-error 201 bei leerer Nachricht
 
 0.05.02 --- 20.09.99

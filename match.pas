@@ -8,7 +8,7 @@ interface
 
 {$ifdef fpc}
 	{$ifdef linux}
-	uses fparser,smapi,erweiter,utils,memman,strings;
+	uses fparser,smapi,erweiter,utils,memman,strings,log;
 	{$endif}
 {$endif}
 
@@ -179,14 +179,22 @@ begin
  if x^.ele='=' then mflag:=(att and myflag)<>0;
  if x^.ele='%' then mflag:=(att and myflag)=0;
 end;
+
 function mbody(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;
+const
+	conv:string='0123456789abcdef';
+ 
 var
  s:string;
  not_:boolean;
  i,textsize:longint;
  ppp,p,pp:pchar;
  b:boolean;
-begin
+ {$ifdef debugit} 
+	name:string;
+	f:file;
+ {$endif debug}
+begin	
  not_:=false;
  if x^.ele<>'=' then begin
   writeln('Error: ',x^.ele,' not supported in body-statment'); halt;
@@ -200,14 +208,37 @@ begin
  if (length(s)>0) and (s[1]='~') then begin writeln('~ not neccessary in body-statment'); delete(s,1,1); end;
  textsize:=area^.f^.GetTextLen(msg);
  if textsize=0 then begin mbody:=false; exit; end;
- p:=getmemory(textsize+2);
- pp:=getmemory(length(s)+1);
+
+ p:=getmemory(textsize+1);
  area^.f^.ReadMsg(msg,xmsg,0,textsize,p,0,nil);
- p[textsize+1]:=#0;
- for i:=0 to textsize-2 do if p[i]=#0 then p[i]:=' ';
+ p[textsize]:=#0;
+{ for i:=0 to textsize-1 do if p[i]=#0 then p[i]:=' ';}
+
+ pp:=getmemory(length(s)+1);
  strpcopy(pp,s);
+
  b:=psearchi(p,pp)<>nil;
  if not_ then b:=not b;
+ {$ifdef debugit}
+ if b then begin
+    repeat
+      name:='';
+      for i:=1 to 8 do name:=name+conv[random(16)+1];
+      name:='ffma_'+name;
+   until not exist(name);
+
+	assign(f,name);
+	rewrite(f,1);
+	blockwrite(f,p[0],textsize+1);
+	close(f);
+
+	assign(f,name+'_');
+	rewrite(f,1);
+	blockwrite(f,pp[0],length(s)+1);
+	close(f);
+	logit(0,'MBODY FILE:'+name+' Serach: >'+s+'<');
+ end;
+ {$endif}
  mbody:=b;
  freememory(p,true);
  freememory(pp,true);
