@@ -6,12 +6,12 @@ interface
 
 {$ifdef __GPC__}
 {$x+}
-	uses fparser,utils,erweiter,gpcstrings,log,gpcsmapi,memman,fidoconf,fidoconf2;
+	uses fparser,utils,erweiter,gpcstrings,log,gpcsmapi,memman,fconf,fidoconf2;
 {$endif}
 
 {$ifdef fpc}
 	{$ifdef linux}
-	uses fparser,utils,erweiter,strings,log,smapi,memman,fidoconf,fidoconf2;
+	uses fparser,utils,erweiter,strings,log,smapi,memman,fconf,fidoconf2;
 	{$define havedosunit}
 	{$endif}
 {$endif}

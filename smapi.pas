@@ -79,6 +79,7 @@ type
     utc_ofs:integer;
     replyto:longint;
     replies:array[0..9] of longint;
+    umsgid:longint;
     __ftsc_date:array[0..19] of char;
    end;
  p_minf=^_minf;
@@ -160,7 +161,7 @@ type
        mix:word;
        f:pfkt;
 
-{    void *apidata;}
+       apidata:pointer;
         dummy:array[1..20000] of char; {very bad}
       end;
 
@@ -184,7 +185,7 @@ byte *EXPENTRY CopyToControlBuf(byte * txt, byte ** newtext, unsigned *length);
 word EXPENTRY NumKludges(char *txt);
                                             }
 {function RemoveFromCtrl(ctrl:pchar;what:pchar);cdecl;
-function ConvertControlInfo(ctrl:pchar;orig:p_netaddr;dest:p_netaddr);cdecl;}
+function ConvertControlInfo(ctrl:pchar;orig:p_netaddr;dest:p_netaddr);cdecl;}
 
 
 implementation
@@ -194,7 +195,7 @@ const
 {var
  _msgapierror:word;external;}
 {function RemoveFromCtrl(ctrl:pchar;what:pchar);cdecl;external;
-function ConvertControlInfo(ctrl:pchar;orig:p_netaddr;dest:p_netaddr);cdecl;external;}
+function ConvertControlInfo(ctrl:pchar;orig:p_netaddr;dest:p_netaddr);cdecl;external;}
 
 function MsgOpenApi(_minf:p_minf):byte; cdecl; external;
 function MsgCloseApi:byte;cdecl; external;

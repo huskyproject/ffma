@@ -26,12 +26,12 @@ program ffma;
 
 {$ifdef __GPC__}
 {$x+}
-     Uses ini,erweiter,gpcstrings,utils,fparser,memman,log,gpcsmapi,match,fidoconf,fidoconf2;
+     Uses ini,erweiter,gpcstrings,utils,fparser,memman,log,gpcsmapi,match,fconf,fidoconf2;
 {$endif}
 
 {$ifdef fpc}
 	{$ifdef linux}
-     Uses crt,dos,ini,erweiter,strings,utils,fparser,memman,log,smapi,match,fidoconf,fidoconf2;
+     Uses crt,dos,ini,erweiter,strings,utils,fparser,memman,log,smapi,match,fconf,fidoconf2;
 	{$endif}
 {$endif}
 
