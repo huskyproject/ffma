@@ -1,0 +1,38 @@
+ggf. in ffma.ini umbenennen
+
+beginMask Rewrite
+ search none
+ action rewrite subj="Your message was bounced"
+ action rewrite from="FFMA"
+endMask
+
+beginMask Bounce
+ MsgBase netmailarea
+ search (from="Mr Wichtig") & (to="My Name") 
+ action bounce DO:rewrite F:/mnt/mars/box/b.txt MB:ziel.local ADDR:2:2448/820
+ action del
+endMask
+
+
+beginMask Netmail2Echomail
+ MsgBase netmailarea
+ search body="From: Maillist xyz"
+ action echocopy MB:ziel2.local ADDR:2:2448/820 SEENBY:2448/820
+ action del
+endMask
+
+
+beginmask Export
+  MsgBase netmailarea
+  search (from="Mr Wichtig") & (to="Myname")
+  action exportheader F:header
+  action exportmsg F:msg
+  action del
+endMask
+
+beginmask Sinnlos
+  msgbase netmailarea
+  search (flag="local") | (len>"2555")
+  action rewrite dest=99:9999/9999.99
+endMask
+

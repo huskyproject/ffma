@@ -1,0 +1,69 @@
++New Feature
+-Changes
+!Bugfix
+
+0.05.03 --- not released yet
+============================
+!ffma.uid wurde nicht immer gespeichert
+!gelegentlich wurde die UID nicht korrekt ermittelt und 0 abgespeichert
+ (Bugreport by Ingo Korb)
+!getareaimp wurde nicht benutzt
+
+0.05.02 --- 20.09.99
+====================
+!run-time-error 216 in Verbindung mit MSG-Msgbase
+
+0.05.01 --- 12.09.99
+====================
+!Groß- und Kleinschreibung wird bei der Bezeichnung der Msgbasen ignoriert
+!Bildschrimausgang geändert
+!Netmailarea kann nun auch über ihren Namen angesprochen werden
+
+0.05.00 --- 08.09.99
+====================
++Unterstützung für localareas
+!Logfile wird jetzt ordnungsgemäß geschlossen
+
+0.04.00 --- 06.09.99
+====================
++Fidoconfig Unterstützung
++Logfiledir aus fidoconfig wird benutzt
+-ffma.ini wird nach dem Husky-Standard in /etc/fido gesucht
+!-Test und Check werden als Parameter unterstützt
++Unterstützung von MSG-Msgbase
+
+0.03.01 --- 21.08.99
+====================
+!Bug in der Suchfunktion für den Body behoben
+
+0.03 --- 20.08.99
+=================
++writetofile
+!Anfassungen für FPC-Pascal 0.99.12
+
+0.02 --- 18.12.98
+=================
++FFMA durchsucht nicht mehr alle Mails, sondern nur noch die, die er noch 
+ nicht bearbeitet hat. Nachdem man Sqfix angewendet hat, sollte man FFMA
+ einmal mit dem Paramter --saveuid starten.
++Parameter -all, --save, --notsave, --scan
++Flags in Search
+!FTPT-Kluge statt FMPT 
+!MSGID korregiert
++rewrite dest
++rewrite orig
+-Parameter: ScanAll, ScanNew, Test, SaveUid
++options: --save, --notsave, --config
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+ TODO
+
+-rewrite:	ADDR (OPOINT,...), Flags
+-bounce:	Support for REPLYTO/REPLYADDR
+			reply-Kluge
+-search: 	Regex
+
+-misc:	Path for ffma.uid
+		Support for * in msgbase-Selection

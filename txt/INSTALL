@@ -1,0 +1,26 @@
+Linux:
+------
+
+1. Install FPC-Pascal.
+   http://tfdec1.fys.kuleuven.ac.be/~michael/fpc/fpc.html
+
+2. Install the smapi and the fidoconfig packages.
+   http://husky.sar-gmbh.com
+
+3. edit the makefile
+   
+   pathtoFIDOCONF_PAS = ../fidoconfig
+   INSTBINDIR = /usr/local/bin
+	
+   Maybe you must change these two lines.
+
+      
+4. compile and install ffma
+
+   make linux
+   make linux-ffma
+
+5. Configfile
+   
+   Create a ffma.ini and place this file in the directory /etc/fido.
+   Look at FFMA.org for an example.

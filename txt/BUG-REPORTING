@@ -1,0 +1,26 @@
+BUG-REPORTING
+-------------
+
+Please try to reproduce the bug before contacting me.
+
+Things to do when you encountered a bug:
+
+If a core-dump was created:
+- start gdb with
+   gdb ffma core
+- locate the error
+   where
+
+If the program exits with a run-time-error:
+- start gdb with
+   gdb
+- run the program
+   ffma <used parameter>
+- locate the error
+   where
+
+send me the following things:
+- an extensive description of the situation where the bug happened.
+- version of ffma, smapi and fidoconfig
+- your config-files
+- a short description what system you are using.

@@ -1,0 +1,6 @@
+PASCAL   = ppc386
+#COPT = -v0 
+
+
+linux: fidoconf2.pas erweiter.pas fparser.pas memman.pas utils.pas log.pas ini.pas match.pas fidoconf.pas smapi.pas
+	ppc386 $(COPT) -g -TLinux ffma.pas

@@ -1,0 +1,31 @@
+CC       = gpc
+
+OBJS    = gpcstrings.o  fidoconf2.o erweiter.o fparser.o memman.o utils.o log.o ini.o match.o ffma.o
+OBJS2   = gpcfidoconf.o gpcsmapi.o
+CFLAGS  = -c -g --borland-pascal --extended-syntax
+LFLAGS  = -lsmapilnx -lfidoconfig
+
+all: ffma
+
+ffma: gpcstrings.o gpcfidoconf.o gpcsmapi.o $(OBJS2) $(OBJS)
+	$(CC) $(LFLAGS) -o ffma $(OBJS) $(OBJS2)
+
+
+gpcfidoconf.o: gpcfidoconf.pas 
+	$(CC) -c -g gpcfidoconf.pas
+
+gpcsmapi.o: gpcsmapi.pas 
+	$(CC) -c -g gpcsmapi.pas
+
+
+%.o: %.pas
+	$(CC) $(CFLAGS) $*.pas
+
+
+clean:
+	rm -f *.o
+	rm -f *.a
+	rm -f *.ppu
+	rm -f *~
+	rm -f *.bak
+	rm -f *.gpi
