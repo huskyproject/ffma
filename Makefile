@@ -22,8 +22,8 @@ ffma$(EXE): fidoconf2.pas erweiter.pas fparser.pas memman.pas utils.pas \
             log.pas ini.pas match.pas fidoconf.pas smapi.pas ffma.pas
 	$(PC) $(POPT) $(LOPT) -T$(UNAMELONG) ffma.pas
 
-fidoconf.pas: $(INCDIR)/fidoconfig/fidoconfig.h
-	cat $(INCDIR)/fidoconfig/fidoconfig.h \
+fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
+	cat $(INCDIR)/fidoconf/fidoconf.h \
 	 | awk 'BEGIN { cpp=0; } { if (($$1 == "#ifdef") && ($$2 == "__cplusplus")) { cpp=1; } else if (($$1 == "#endif") && (cpp == 1)) { cpp=0; } else if (cpp == 1) { printf "\n" } else { print; } }' > fidoconf.h
 	h2pas -u fidoconf -p -l fidoconfig -s -d -o /dev/stdout \
 	 fidoconf.h | sed -e 's/\^char/pchar/g' \
