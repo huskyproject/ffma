@@ -35,6 +35,7 @@ install: ffma$(EXE)
 	$(INSTALL) $(IBOPT) ffma$(EXE) $(BINDIR)
 
 clean:
+	-$(RM) fidoconf.pas
 	-$(RM) *$(OBJ)
 	-$(RM) *$(LIB)
 	-$(RM) *$(TPU)
