@@ -15,7 +15,7 @@ If the program exits with a run-time-error:
 - start gdb with
    gdb
 - run the program
-   ffma <used parameter>
+   run ffma <used parameter>
 - locate the error
    where
 

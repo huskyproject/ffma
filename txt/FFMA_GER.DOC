@@ -1,0 +1,237 @@
+
+
+
+
+                                    FFMA
+                          FreeFidoMessageAssistant
+                                   0.08.xx
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Allgemeines
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+ Diese Datei ist als eine kurze Hilfe gedacht. Eine echte Dokumentation
+ folgt vielleicht später einmal.
+
+ Dieses ist eine Beta-Version von FFMA. Obwohl ich FFMA getestet habe,
+ kann ich Fehler nicht ausschließen. 
+ 
+ Bugreports bitte an mich. Vorher bitte die Datei BUG-REPORTING lesen.
+
+ Bei ersten Start ist evtl. der Parameter SAVEUID nötig, damit FFMA die 
+ alten Messages nicht bearbeitet. Der Parameter SAVEUID ist auch dann nötig,
+ wenn man Sqfix eingesetzt hat.
+
+ FFMA arbeitet nur mit Squish und MSG MessageBasen zusammen und ist bislang 
+ nur auf Netmails ausgelegt (außer ECHOCOPY/ECHOMOVE).
+
+ FFMA ist in Pascal geschrieben. Um es zu komplieren wird FPC-Pascal
+ benötigt: http://www.freepascal.org
+
+ FFMA ist bislang nur unter Linux getestet worden.
+
+ Nach einer Änderung des Config-Files sollten die Einstellung durch
+ ffma CHECK geteset werden. In diesem Modus führt FFMA keine
+ Aktionen aus.
+
+  Bugs, Patches, Bemerkungen, Anregungen, Kritik an
+  Internet: sb100@uni-duisburg.de
+  Fido: Sven Bursch@2:2448/820
+
+  Die jeweils aktuelle Version ist unter
+
+  HTTP://www.uni-duisburg.de/~sa519bu/ffma 
+   doer
+  http://husky.physcip.uni-stuttgart.de
+
+  zu finden.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Action-Statments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ zum Syntax
+ ==========
+ MB:(..)   Spezifiziert eine MessageBase.
+			 MB: Linux.ger
+           Die weiteren Informationen werden der Datei /etc/fido/config 
+           entnommen, die zum Fidoconfig gehört.
+
+
+ ADDR:(..) Spezifiziert  eine Adresse
+             ADDR:75:7158/854.69
+
+
+ F:(..)    Spezifiziert eine Datei
+             Linux: F:/var/spool/fido/bouncetext
+
+
+ SEENBY:(..) Spezifiziert SEEN-BY
+               SEENBY:2448/820
+
+
+ DO:(..) Spezifiziert eine "MASK", die auf die neu erzeugte Message
+         angewendet werden soll.
+
+D:(..)   Spezifiziert ein Verzeichnis
+
+ Ausdrcke in eckigen Klammern sind optional.
+
+ echcopy MB:(..) ADDR:(..)  SEENBY:(..) [DO:(..)]
+ ================================================
+ Kopiert eine Netmail in ein Echoarea.
+ -alle Kluges werden gel”scht
+ -das local-Flag wird gesetzt. Alle anderen gelöscht
+ -Addr als Absender gesetzt
+ -Tearline (---) wird ggf. durch -+- ersetzt
+ -Origin (* Origin:) wird ggf. durch + Origin: ersetzt
+ -Neue Tearline und Origin werden angefügt
+ -Die durch DO:(..) spezifizierte "MASK", wird auf die neu erzeugte
+  Mail angewendet. (Vorsicht! Echomail!)
+
+ echomove MB:(..) ADDR:(..)  SEENBY:(..) [DO:(..)]
+ =================================================
+ Wie echocopy, jedoch wird die Ursprungsnachricht gelöscht
+
+ bounce ADDR:(..) F:(..) [FULLMSG] [MB:(..)] [DO:(..)]
+ =====================================================
+ Schickt eine Netmail an den Verfasser zurück
+ -Der Nachricht beginnt mit dem Text aus der Datei F:(..).
+  Falls FULLMSG benutzt wird, wird an diesem Text die originale Nachricht
+  angefügt.
+  In der Datei k”nnen folgende Platzhalter benutzt werden:
+   %FR Name des Absenders
+   %OR Adresse des Absenders
+   %TO Name des Empf„ngers
+   %DE Adresse des Empf„ngers
+   %SU Subject
+   %TI Zeit im Format hh:mm:ss
+   %DA Datum im Format tt:mm:yyyy
+ -REPLYTO/REPLYADDR-Kluges werden noch nicht untersttzt
+ -Der Absender wird auf FFMA gesetzt
+ -das local-Flag wird gesetzt. Alle anderen Flags werden gel”scht
+ -alle Kluges werden gel”scht
+ -Falls MB:(..) spezifiziert ist, wird die Bounce-Nachricht in einem anderen
+  Netmail-Area erstellt.
+ -Die durch DO:(..) spezifizierte "MASK", wird auf die neu erzeugte
+  Bounce-Mail angewendet.
+ -Die Urspruchsmail wird nicht gelöscht. -> action del
+
+ copy MB:(..) [DO:(..)]
+ ======================
+ Kopiert eine Netmail in ein andere Netmail-Area
+ -Die gesamte Nachricht wird nicht verändert
+ -Die durch DO:(..) spezifizierte "MASK", wird auf die neu erzeugte
+  Mail angewendet.
+
+
+ MOVE MB:(..) [DO:(..)]
+ ======================
+ Verschiebt eine Netmail in ein andere Netmail-Area
+ -Die gesamte Nachricht wird nicht verändert
+
+ ExportHeader F:(..) | D:(..)
+ ============================
+ Schreibt den Header einer Netmail in die durch F:(..) spezifizierte Datei
+ oder in das durch D:(..) spezifizierte Verzeichnis. Dabei werden in diesem
+ Verzeichnis Dateien mit zufällig gewählten Namen erzeugt.
+
+ ExportMSG F:(..) | D:(..)
+ =========================
+ Schreibt den Header und den Body einer Netmail in die durch F:(..)
+ spezifizierte Datei oder in das durch D:(..) spezifizierte Verzeichnis. 
+ Dabei werden in diesem Verzeichnis Dateien mit zufällig gewählten Namen
+ erzeugt.
+
+ Del
+ ===
+ Löscht eine Netmail
+ -alle Actionen, die einer Del-Anweisung folgen, werden ignoiert
+
+ SEMAPHORE F:(..)
+ ================
+ Erstellt eine Semaphore
+ -Sollte die Datei F:(..) nicht vorhanden sein, wird sie neu angelegt
+ -Sollte die Datei F:(..) vorhanden sein, wird sie getoucht, d.h. Zeit
+  und Datum werden auf die aktuelle Zeit bzw. auf das aktuelle Datum gesetzt
+
+ REWRITE FROM=(..) | TO=(..) | SUBJ=(..) | DEST=(..) | ORIG=(..)
+ ===============================================================
+ Ändert den Absender, den Empfänger oder das Subj.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Search
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+search=none
+  Diese Suchbedingung ist nie erfüllt. Nur nutzlich für DO-Statments
+search=any
+  Diese Suchbedingung ist immer erfüllt.
+
+| logische oder-Verknfung
+& logsiche und-Verknfung
+
+BSP:
+ search from="someone" | from="someoneelse"
+ search (from="someone & to="myname") | (from="someoneelse")
+
+serach from="~peter"   Sucht nach Nachrichten, wo im Namen irgendwo Peter
+                       vorkommen
+search from="!~peter"  Sucht nach Nachrichten, wo im Namen nicht Peter
+                       vorkommt
+                       Entspricht: search from%"~peter"
+search from="peter"    Sucht nach Nachrichten, wo der Name gleich Peter ist
+
+= gleich
+< kleiner
+> größer
+% ungleich
+
+Ein größer oder kleiner Vergleich ist nicht in allen Fallen möglich.
+BSP: search orig<"2:0/0.0" funktioniert nicht
+
+from    Absendernamen
+to      Empfängernamen
+subj    Subject
+body    Nachrichten Text
+kludge  kludges
+
+Orig  Absenderaddresse in der Form zone:net/node.point
+Dest  Empfängeraddresse in der Form zone:net/node.point
+
+Ozone, Onet, Onode, Opoint  Zone, Net, Node oder Pointnummer des Absenders
+Dzone, Dnet, Dnode, Dpoint  Zone, Net, Node oder Pointnummer des Empf„ngers
+
+Len   Länge der Mail
+Flag  Ob ein bestimmtes Flag gesetzt ist
+
+Groß- und Kleinschreibung wird nicht unterscheidet.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Flags
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+PRIVATE
+CRASH
+READ       Message has been read by the addressee
+SENT
+FILE       FileAttach
+FWD        Message is in-transit
+ORPHAN     The message destination address could not be found in
+           the nodelist
+KILL       kill when sent
+LOCAL
+HOLD
+FRQ        filerequest
+URQ        update filerequest
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Known Bugs / Features
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+none

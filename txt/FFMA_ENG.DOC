@@ -1,0 +1,232 @@
+
+
+
+
+                                    FFMA
+                          FreeFidoMessageAssistant
+                                   0.08.xx
+
+
+
+
+
+
+
+
+
+"Translation" of this "manual" by Ingo Korb.
+------------------------------------------------------------------
+General
+------------------------------------------------------------------
+
+This text is just a short help. 
+A real documentation might be written later (no, really!).
+
+This is an BETA version of FFMA. Although I have tested FFMA some errors 
+might remain. 
+
+Please send a bug report if you find one. See also the file BUG-REPORTING.
+
+When FFMA is started for the first time the parameter SAVEUID might be
+neccecary so stop FFMA from filtering the old messages. The parameter is also
+neccecary if you used SqFix.
+
+FFMA only works with Squish and .MSG message bases and is currently for 
+netmail only (save for ECHOCOPY/ECHOMOVE).
+
+FFMA was written in Pascal. 
+To compile it you need FPC-Pascal: http://www.freepascal.org
+
+FFMA was tested only on Linux to this date.
+
+After changing the config file you should run ffma CHECK to test it. 
+In this mode FFMA does not execute any actions.
+
+Bugs, patches, comments, critic to
+Internet: sb100@uni-duisburg.de
+Fido: Sven Bursch@2:2448/820
+
+The current version can be found at
+http://www.uni-duisburg.de/~sa519bu/ffma
+or
+http://husky.physcip.uni-stuttgart.de
+
+------------------------------------------------------------------
+Action-Statements
+------------------------------------------------------------------
+
+about the Syntax
+================
+MB:(..)	Specifies a message base
+			MB: Linux.ger
+	The other information will be read using fidoconfig.
+
+ADDR:(..)	Specifies an address
+			ADDR:75:7158/854.69
+
+F:(..)	Specifies a file
+			Linux: F:/var/spool/fido/bouncetext
+
+SEENBY:(..)	Specifies SEEN-BY
+		SEENBY:2448/820
+
+DO:(..)	Specifies a "MASK" that is run on the message that
+	was just created.
+
+D:(..)   Specifies a directory.
+
+Anything in square brackets ([]) is optional.
+
+echocopy MB:(..) ADDR:(..) SEENBY:(..) [DO:(..)]
+------------------------------------------------
+Copies a net mail into an echo area.
+- all kludges are deleted
+- the local flag is set, all others are deleted
+- ADDR is set as the From address
+- Tearline (---) gets replaced by -+- if found
+- Origin ( * Origin:) gets replaced by + Origin: if found
+- new tearline and origin are appended
+- the mask specified by DO:(..) will be run on the new
+  message (Warning: Echomail!)
+
+echomove MB:(..) ADDR:(..) SEENBY:(..) [DO:(..)]
+------------------------------------------------
+Same as echocopy, but deletes the original message.
+
+bounce ADDR:(..) F:(..) [FULLMSG] [MB:(..)] [DO:(..)]
+-----------------------------------------------------
+Send a netmail back to the author.
+- The message starts with the text from the file specified by
+  F:(..). If FULLMSG is used the original message is appended
+  to this text.
+  In the file you can use these tokens:
+    %FR  Name of the sender
+    %OR  Address of the sender
+    %TO  Name of the recipient
+    %DE  Address of the recipient
+    %SU  Subject
+    %TI  Time in hh:mm:ss format
+    %DA  Date in dd:mm:yyyy format
+- REPLYTO/REPLYADDR-kludges are not supported yet
+- the from-field is set to FFMA
+- the local-flag is set, all other flags are deleted
+- all kludges are deleted
+- If MB:(..) is specified the bounce-message is put into a
+  different netmail-area.
+- The mask specified by DO:(..) is run on the new message.
+- The original message will not be deleted. Use action del
+  if you need to.
+
+copy MB:(..) [DO:(..)]
+----------------------
+Copies a netmail into a different netmail-area
+- The message will not be changed in any way.
+- The mask specified by DO:(..) is run on the new message.
+
+move MB:(..) [DO:(..)]
+----------------------
+Moves a netmail into a different netmail-area.
+- The message will not be changed in any way.
+
+ExportHeader F:(..) | D:(..)
+----------------------------
+Writes the header of a netmail into the file specified by F:(..) or creates 
+unique File in the directory specified by D:(..). 
+
+ExportMSG F:(..)
+----------------
+Writes the header any body of a netmail into the file specified by F:(..) or
+creates unique File in the directory specified by D:(..). 
+
+Del
+---
+Deletes a netmail.
+- All actions following a del-action will be ignored.
+
+SEMAPHORE F:(..)
+----------------
+Creates a semaphore.
+- If the file specified by F:(..) does not exist it will be
+  created.
+- If the file specified by F:(..) already exists it's timestamp
+  will be set to the current time.
+
+REWRITE FROM=(..) | TO=(..) | SUBJ=(..) | DEST=(..) | ORIG=(..)
+---------------------------------------------------------------
+Changes the sender, the recipient or the subject.
+
+
+------------------------------------------------------------------
+Search
+------------------------------------------------------------------
+
+search=none
+	This condition will never be true. Only useful for DO-Statements.
+
+search=any
+	This condition is always true.
+
+| logical OR
+& logical AND
+
+Example:
+	search from="someone" | from="someoneelse"
+	search (from="someone & to="myname") | (from="someoneelse")
+[Translators note: Error: String constant exceeds line. =) ]
+
+search from="~peter"	Searches for messages where peter appears
+					somewhere in the name.
+search from="!~peter"	Searches for messages where peter does not
+					appear in the name.
+					Is equal to: search from%"~peter"
+search from="peter"		Searches for messages where the name is
+					peter.
+
+= equals
+< less than
+> greater than
+% not equal
+
+A less than or greater than match is not possible in all cases.
+Example: search orig<"2:0/0.0" does not work.
+
+from		sender name
+to		    recipient name
+subj		subject
+body		message-body
+kludge      kludges
+
+Orig		Sender address formatted as zone:net/node.point
+Dest		Recipient address formatted as zone:net/node.point
+
+Ozone, Onet, Onode, Opoint
+		Zone, net, node or point number of the sender
+Dzone, Dnet, Dnode, Dpoint
+		Zone, net, node or point number of the recipient
+
+Len		Length of the message
+Flag		Checks if a certain flag is set.
+
+There Is No Case-Sensitivity.
+
+------------------------------------------------------------------
+Flags
+------------------------------------------------------------------
+PRIVATE
+CRASH
+READ    Message has been read by the addressee
+SENT
+FILE    FileAttach
+FWD     Message is in-transit
+ORPHAN	The message destination address could not be found
+	    in the nodelist
+KILL	kill when sent
+LOCAL
+HOLD
+FRQ	filerequest
+URQ	update filerequest
+
+------------------------------------------------------------------
+Known Bugs / Features
+------------------------------------------------------------------
+none
