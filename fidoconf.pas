@@ -39,7 +39,7 @@ unit fidoconf;
 {$endif}
 
 
-  function striptwhite(str:pchar):pchar;cdecl;
+  function striptwhite(str:pchar):pchar;
 
 
   type
@@ -462,51 +462,51 @@ unit fidoconf;
 
      fidoconfig = s_fidoconfig;
 
-  function readConfig:ps_fidoconfig;cdecl;
+  function readConfig:ps_fidoconfig;
 
-  procedure disposeConfig(config:ps_fidoconfig);cdecl;
+  procedure disposeConfig(config:ps_fidoconfig);
 
-  function getLink(config:s_fidoconfig; addr:pchar):ps_link;cdecl;
+  function getLink(config:s_fidoconfig; addr:pchar):ps_link;
 
-  function getLinkForArea(config:s_fidoconfig; addr:pchar; area:ps_area):ps_link;cdecl;
+  function getLinkForArea(config:s_fidoconfig; addr:pchar; area:ps_area):ps_link;
 
-  function getLinkFromAddr(config:s_fidoconfig; aka:s_addr):ps_link;cdecl;
+  function getLinkFromAddr(config:s_fidoconfig; aka:s_addr):ps_link;
 
-  function getAddr(config:s_fidoconfig; addr:pchar):ps_addr;cdecl;
+  function getAddr(config:s_fidoconfig; addr:pchar):ps_addr;
 
-  function existAddr(config:s_fidoconfig; aka:s_addr):longint;cdecl;
+  function existAddr(config:s_fidoconfig; aka:s_addr):longint;
 
-  function getArea(config:ps_fidoconfig; areaName:pchar):ps_area;cdecl;
+  function getArea(config:ps_fidoconfig; areaName:pchar):ps_area;
 
-  function getEchoArea(config:ps_fidoconfig; areaName:pchar):ps_area;cdecl;
+  function getEchoArea(config:ps_fidoconfig; areaName:pchar):ps_area;
 
-  function getNetMailArea(config:ps_fidoconfig; areaName:pchar):ps_area;cdecl;
+  function getNetMailArea(config:ps_fidoconfig; areaName:pchar):ps_area;
 
-  function isLinkOfArea(link:ps_link; area:ps_area):longint;cdecl;
+  function isLinkOfArea(link:ps_link; area:ps_area):longint;
 
-  function dumpConfigToFile(config:ps_fidoconfig; fileName:pchar):longint;cdecl;
+  function dumpConfigToFile(config:ps_fidoconfig; fileName:pchar):longint;
 
-  function readLine(F:pFILE):pchar;cdecl;
+  function readLine(F:pFILE):pchar;
 
-  function parseLine(line:pchar; config:ps_fidoconfig):longint;cdecl;
+  function parseLine(line:pchar; config:ps_fidoconfig):longint;
 
-  procedure parseConfig(f:pFILE; config:ps_fidoconfig);cdecl;
+  procedure parseConfig(f:pFILE; config:ps_fidoconfig);
 
-  function getConfigFileName:pchar;cdecl;
+  function getConfigFileName:pchar;
 
-  function trimLine(line:pchar):pchar;cdecl;
+  function trimLine(line:pchar):pchar;
 
-  procedure carbonNames2Addr(config:ps_fidoconfig);cdecl;
+  procedure carbonNames2Addr(config:ps_fidoconfig);
 
-  function getConfigFileNameForProgram(envVar:pchar; configName:pchar):pchar;cdecl;
+  function getConfigFileNameForProgram(envVar:pchar; configName:pchar):pchar;
 
-  function isLinkOfFileArea(link:ps_link; area:ps_filearea):longint;cdecl;
+  function isLinkOfFileArea(link:ps_link; area:ps_filearea):longint;
 
-  function getFileArea(config:ps_fidoconfig; areaName:pchar):ps_filearea;cdecl;
+  function getFileArea(config:ps_fidoconfig; areaName:pchar):ps_filearea;
 
-  procedure dumpConfig(config:ps_fidoconfig; f:pFILE);cdecl;
+  procedure dumpConfig(config:ps_fidoconfig; f:pFILE);
 
-  function grpInArray(group:pchar; strarray:ppchar; len:cardinal):longint;cdecl;
+  function grpInArray(group:pchar; strarray:ppchar; len:cardinal):longint;
 
 {$endif}
 
@@ -514,53 +514,53 @@ unit fidoconf;
 
 const External_library='fidoconfig'; {Setup as you need!}
 
-  function striptwhite(str:pchar):pchar;cdecl;external;
+  function striptwhite(str:pchar):pchar;external;
 
-  function readConfig:ps_fidoconfig;cdecl;external;
+  function readConfig:ps_fidoconfig;external;
 
-  procedure disposeConfig(config:ps_fidoconfig);cdecl;external;
+  procedure disposeConfig(config:ps_fidoconfig);external;
 
-  function getLink(config:s_fidoconfig; addr:pchar):ps_link;cdecl;external;
+  function getLink(config:s_fidoconfig; addr:pchar):ps_link;external;
 
-  function getLinkForArea(config:s_fidoconfig; addr:pchar; area:ps_area):ps_link;cdecl;external;
+  function getLinkForArea(config:s_fidoconfig; addr:pchar; area:ps_area):ps_link;external;
 
-  function getLinkFromAddr(config:s_fidoconfig; aka:s_addr):ps_link;cdecl;external;
+  function getLinkFromAddr(config:s_fidoconfig; aka:s_addr):ps_link;external;
 
-  function getAddr(config:s_fidoconfig; addr:pchar):ps_addr;cdecl;external;
+  function getAddr(config:s_fidoconfig; addr:pchar):ps_addr;external;
 
-  function existAddr(config:s_fidoconfig; aka:s_addr):longint;cdecl;external;
+  function existAddr(config:s_fidoconfig; aka:s_addr):longint;external;
 
-  function getArea(config:ps_fidoconfig; areaName:pchar):ps_area;cdecl;external;
+  function getArea(config:ps_fidoconfig; areaName:pchar):ps_area;external;
 
-  function getEchoArea(config:ps_fidoconfig; areaName:pchar):ps_area;cdecl;external;
+  function getEchoArea(config:ps_fidoconfig; areaName:pchar):ps_area;external;
 
-  function getNetMailArea(config:ps_fidoconfig; areaName:pchar):ps_area;cdecl;external;
+  function getNetMailArea(config:ps_fidoconfig; areaName:pchar):ps_area;external;
 
-  function isLinkOfArea(link:ps_link; area:ps_area):longint;cdecl;external;
+  function isLinkOfArea(link:ps_link; area:ps_area):longint;external;
 
-  function dumpConfigToFile(config:ps_fidoconfig; fileName:pchar):longint;cdecl;external;
+  function dumpConfigToFile(config:ps_fidoconfig; fileName:pchar):longint;external;
 
-  function readLine(F:pFILE):pchar;cdecl;external;
+  function readLine(F:pFILE):pchar;external;
 
-  function parseLine(line:pchar; config:ps_fidoconfig):longint;cdecl;external;
+  function parseLine(line:pchar; config:ps_fidoconfig):longint;external;
 
-  procedure parseConfig(f:pFILE; config:ps_fidoconfig);cdecl;external;
+  procedure parseConfig(f:pFILE; config:ps_fidoconfig);external;
 
-  function getConfigFileName:pchar;cdecl;external;
+  function getConfigFileName:pchar;external;
 
-  function trimLine(line:pchar):pchar;cdecl;external;
+  function trimLine(line:pchar):pchar;external;
 
-  procedure carbonNames2Addr(config:ps_fidoconfig);cdecl;external;
+  procedure carbonNames2Addr(config:ps_fidoconfig);external;
 
-  function getConfigFileNameForProgram(envVar:pchar; configName:pchar):pchar;cdecl;external;
+  function getConfigFileNameForProgram(envVar:pchar; configName:pchar):pchar;external;
 
-  function isLinkOfFileArea(link:ps_link; area:ps_filearea):longint;cdecl;external;
+  function isLinkOfFileArea(link:ps_link; area:ps_filearea):longint;external;
 
-  function getFileArea(config:ps_fidoconfig; areaName:pchar):ps_filearea;cdecl;external;
+  function getFileArea(config:ps_fidoconfig; areaName:pchar):ps_filearea;external;
 
-  procedure dumpConfig(config:ps_fidoconfig; f:pFILE);cdecl;external;
+  procedure dumpConfig(config:ps_fidoconfig; f:pFILE);external;
 
-  function grpInArray(group:pchar; strarray:ppchar; len:cardinal):longint;cdecl;external;
+  function grpInArray(group:pchar; strarray:ppchar; len:cardinal):longint;external;
 
 
 end.
