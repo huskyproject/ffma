@@ -39,7 +39,7 @@ fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 	 | awk 'BEGIN { cpp=0; } { if (($$1 == "#ifdef") && ($$2 == "__cplusplus")) { cpp=1; } else if (($$1 == "#endif") && (cpp == 1)) { cpp=0; } else if (cpp == 1) { printf "\n" } else { print; } }' > fidoconf.h
 	h2pas -u fidoconf -p -l fidoconfig -s -d -o /dev/stdout \
 	 fidoconf.h | sed -e 's/\^char/pchar/g' \
-	 -e 's/\^Double;/\^Double; PFile = ^File;/' \
+	 -e 's/\^Double;/\^Double; PFile = ^File; PPChar = ^PChar;/' \
 	 -e 's/function strend(str : longint) : longint;/function strend(str : pchar) : pchar;/' \
 	| grep -v '^{$$include' \
 	| grep -v "^[^']*';$$" \

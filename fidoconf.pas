@@ -21,7 +21,7 @@ unit fidoconf;
      PInteger  = ^Integer;
      PCardinal = ^Cardinal;
      PReal     = ^Real;
-     PDouble   = ^Double; PFile = ^File;
+     PDouble   = ^Double; PFile = ^File; PPChar = ^PChar;
 
 {$ifndef FIDOCONFIG_H}
 {$define FIDOCONFIG_H}
