@@ -1,5 +1,5 @@
 unit gpcstrings;
-
+{$x+}
 
 interface
 

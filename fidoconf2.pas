@@ -4,7 +4,7 @@ interface
 
 
 {$ifdef __GPC__}
-uses gpcstrings,gpcfidoconf;
+uses gpcstrings,fidoconf;
 {$endif}
 
 {$ifdef fpc}
