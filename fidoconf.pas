@@ -37,12 +37,6 @@ unit fidoconf;
   const
      PATH_DELIM = '\\';
 {$endif}
-  { was #define dname(params) def_expr }
-  { argument types are unknown }
-  { return type might be wrong }   
-  function strend(str : pchar) : pchar;
-    { return type might be wrong }   
-
 
 
   function striptwhite(str:pchar):pchar;cdecl;
@@ -519,15 +513,6 @@ unit fidoconf;
   implementation
 
 const External_library='fidoconfig'; {Setup as you need!}
-
-  { was #define dname(params) def_expr }
-  { argument types are unknown }
-  { return type might be wrong }   
-  function strend(str : pchar) : pchar;
-    { return type might be wrong }   
-    begin
-       strend:=(str + (strlen(str))) - 1;
-    end;
 
   function striptwhite(str:pchar):pchar;cdecl;external;
 
