@@ -35,6 +35,7 @@ linux-gpc:
 clean:
 	rm -f *.o *.a *.ppu *~ *.bak *.gpi ffma.uid *.s
 	rm -f h2pas/*.o h2pas/*.a h2pas/*.ppu h2pas/*~ h2pas/*.bak h2pas/*.gpi h2pas/ffma.uid
+	rm -f txt/*~
 
 distclean:	clean
 	rm -f ffma h2pas/h2pas

@@ -888,7 +888,7 @@ begin
  logit(9,'Copyright by Sven Bursch, Germany  1998-1999');
  logit(9,'FFMA comes with ABSOLUTELY NO WARRANTY. See COPYING');
  logit(9,'');
- logit(9,z2s(memavail));
+ logit(0,z2s(memavail));
  checkpara;
  readini(configfile,fc);
 
@@ -913,6 +913,6 @@ begin
 
  {Cleanup}
  shownotfree;
- logit(9,z2s(memavail));
+ logit(0,z2s(memavail));
  logit(3,'Normal exit');
 end.

@@ -1,4 +1,4 @@
-ggf. in ffma.ini umbenennen
+#ggf. in ffma.ini umbenennen
 
 beginMask Rewrite
  search none

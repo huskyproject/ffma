@@ -18,7 +18,7 @@ Linux:
 4. compile and install ffma
 
    make linux
-   make linux-ffma
+   make linux-install
 
 5. Configfile
    

@@ -20,7 +20,7 @@ If the program exits with a run-time-error:
    where
 
 send me the following things:
-- an extensive description of the situation where the bug happened.
-- version of ffma, smapi and fidoconfig
+- an detailed description of the situation where the bug happened.
+- version of ffma, smapi, fidoconfig and compiler
 - your config-files
 - a short description what system you are using.
