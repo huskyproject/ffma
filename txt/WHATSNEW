@@ -2,10 +2,15 @@
 -Changes
 !Bugfix
 
-0.05.05 --- not yet released
-============================
-+Statistics
+0.06.00 --- 16.12.99
+====================
+!action bounce generated an wrong fts-date-filed
+!run-time-error 216 in action bounce
 !run-time-error 2 if ffma.ini not exists.
+!ffma saved the uid even then using the parameter check
++parameter --uid
++more than one Netmailareas are supported
++Statistics
 -ffma.uid is created in the directory, where your Fidoconfig was found.
  move your existing ffma.uid into this direcotry (normally /etc/fido)
 
