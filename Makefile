@@ -71,15 +71,22 @@ fidoconf2.pas: gpcstrings$(OBJ) fidoconf$(OBJ)
 endif
 
 ifeq ($(PC), ppc386)
-utils.pas: smapi$(OBJ)
-else
-utils.pas: gpcsmapi$(OBJ)
-endif
-
 ffma$(EXE): fidoconf2$(OBJ) erweiter$(OBJ) fparser$(OBJ) memman$(OBJ) \
             utils$(OBJ) log$(OBJ) ini$(OBJ) match$(OBJ) fidoconf$(OBJ) \
             smapi$(OBJ) ffma.pas
 	$(PC) $(POPT) $(LOPT) ffma.pas
+else
+ffma$(EXE): fidoconf2$(OBJ) erweiter$(OBJ) fparser$(OBJ) memman$(OBJ) \
+            utils$(OBJ) log$(OBJ) ini$(OBJ) match$(OBJ) fidoconf$(OBJ) \
+            gpcsmapi$(OBJ) ffma.pas
+	$(PC) $(POPT) $(LOPT) ffma.pas
+endif
+
+ifeq ($(PC), ppc386)
+utils.pas: smapi$(OBJ)
+else
+utils.pas: gpcsmapi$(OBJ)
+endif
 
 install: ffma$(EXE)
 	$(INSTALL) $(IBOPT) ffma$(EXE) $(BINDIR)
