@@ -38,7 +38,7 @@ program ffma;
 
 const
 	configfile:string='/etc/fido/ffma.ini';
-	version='0.08.00';
+	version='0.08.01';
     compiler:string='Unknown';
 
 type
@@ -247,10 +247,10 @@ begin
       writeln('Could not open Msgbase: ',p^.msgbase); halt;
     end;
     destarea:=MsgOpenArea(destfcarea^.filename,MSGAREA_CRIFNEC,destfcarea^.msgbtype);
-	while destarea^.f^.lock(destarea)<>0 do begin writeln('MsgBase locked. Waiting!'); delay(5000); end;
     if destarea=nil then begin
       writeln('Could not open Msgbase: ',p^.msgbase);  halt;
     end;
+	while destarea^.f^.lock(destarea)<>0 do begin writeln('MsgBase locked. Waiting!'); delay(5000); end;
 
     if InvalidMh(destarea) then begin
       writeln('Invalid handle to Msgbase');
