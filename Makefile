@@ -22,9 +22,11 @@ else
 ifeq ($(PC), ppc386)
   POPT = -v0 -XS -Co -Ci -Cr -Ct
   LOPT = -Fl$(LIBDIR)
+  PCOPT =
 else
   POPT =
   LOPT = -L$(LIBDIR)
+  PCOPT = -c
 endif
 endif
 
