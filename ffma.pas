@@ -246,7 +246,7 @@ begin
       writeln('Could not open Msgbase: ',p^.msgbase); halt;
     end;
     destarea:=MsgOpenArea(destfcarea^.filename,MSGAREA_CRIFNEC,destfcarea^.msgbtype);
-	destarea^.f^.lock(destarea);
+	while destarea^.f^.lock(destarea)<>0 do begin writeln('MsgBase locked. Waiting!'); delay(5000); end;
     if destarea=nil then begin
       writeln('Could not open Msgbase: ',p^.msgbase);  halt;
     end;
@@ -268,7 +268,7 @@ begin
     freememory(textbuf,true);
     freememory(ctrlbuf,true);
     if p^.dostat<>nil then dodostatment(destfcarea,destarea,newnr,p^.dostat);
-	destarea^.f^.unlock(destarea);
+	while destarea^.f^.unlock(destarea)<>0 do begin writeln('MsgBase locked. Waiting!'); delay(5000); end;
     destarea^.f^.closearea(destarea);
 end;
 
@@ -749,7 +749,7 @@ begin
     if a=nil then begin logit(9,'Could not open Msgbase via fidoconfig: '+strpas(l^.msgbase)); halt; end;
     area:=MsgOpenArea(a^.filename,MSGAREA_CRIFNEC,a^.msgbtype);
     if area=nil then begin logit(9,'Could not open Msgbase: '+strpas(l^.msgbase)); halt; end;
-    area^.f^.lock(area);
+	while area^.f^.lock(area)<>0 do begin writeln('MsgBase locked. Waiting!'); delay(5000); end;
     if InvalidMh(area) then begin logit(9,'Invalid handle to Msgbase'); halt; end;
 {    if area^.num_msg<>area^.high_msg then begin logit(9,'NUM_MSG<>HIGH_MSG'); halt; end;}
     writeln('Scanning '+strpas(l^.msgbase)+' ',area^.num_msg,' Mails');
@@ -815,7 +815,7 @@ begin
         logit(4,'SCAN: MB:'+strpas(l^.msgbase)+'No UID');
 		removeuid(uidlisteout,strpas(l^.msgbase));
     end;
-    area^.f^.unlock(area);
+	while area^.f^.unlock(area)<>0 do begin writeln('MsgBase locked. Waiting!'); delay(5000); end;
     area^.f^.closearea(area);
     l:=l^.next;
  end;
@@ -929,13 +929,13 @@ begin
     if fcarea=nil then begin logit(9,'Could not open Msgbase: '+strpas(l^.msgbase)); halt; end;
     area:=MsgOpenArea(fcarea^.filename,MSGAREA_CRIFNEC,fcarea^.msgbtype);
     if area=nil then begin logit(9,'Could not open Msgbase: '+strpas(l^.msgbase)); halt; end;
-    area^.f^.lock(area);
+	while area^.f^.lock(area)<>0 do begin writeln('MsgBase locked. Waiting!'); delay(5000); end;
     if InvalidMh(area) then begin logit(9,'Invalid handle to Msgbase'); halt; end;
 {    if area^.num_msg<>area^.high_msg then begin logit(9,'NUM_MSG<>HIGH_MSG'); halt; end;}
     anz:=area^.high_msg;
     logit(3,strpas(l^.msgbase)+': Msg '+z2s(area^.high_msg)+' Uid:'+z2s(area^.f^.msgntouid(area,anz)));
     if anz>0 then storeuid(uidlisteout,strpas(l^.msgbase),area^.f^.msgntouid(area,anz));
-    area^.f^.unlock(area);
+	while area^.f^.unlock(area)<>0 do begin writeln('MsgBase locked. Waiting!'); delay(5000); end;
     area^.f^.closearea(area);
     l:=l^.next;
  end;
