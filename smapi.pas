@@ -24,7 +24,7 @@ const
 
 {$ifdef LINUX}
   {$linklib smapi}
-  {$linklib gcc}
+  { $linklib gcc}
   {$linklib c}
 {$endif}
 
