@@ -26,8 +26,6 @@ unit fidoconf;
 {$ifndef FIDOCONFIG_H}
 {$define FIDOCONFIG_H}
 {$ifndef FPC}
-{$include <stdio.h>}
-{$include <smapi/msgapi.h>}
 {$endif}
 
   const

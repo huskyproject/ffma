@@ -39,7 +39,7 @@ fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 	 fidoconf.h | sed -e 's/\^char/pchar/g' \
 	 -e 's/\^Double;/\^Double; PFile = ^File;/' \
 	 -e 's/function strend(str : longint) : longint;/function strend(str : pchar) : pchar;/' \
-	| fgrep -v '^{$$include' \
+	| grep -v '^{$$include' \
 	> fidoconf.pas
 endif
 
