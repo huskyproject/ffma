@@ -25,7 +25,8 @@ program ffma;
 }
 
 {$ifdef __GPC__}
-     Uses ini,erweiter,gpcstrings,utils,fparser,memman,log,gpcsmapi,match,gpcfidoconf,fidoconf2;
+{$x+}
+     Uses ini,erweiter,gpcstrings,utils,fparser,memman,log,gpcsmapi,match,fidoconf,fidoconf2;
 {$endif}
 
 {$ifdef fpc}
