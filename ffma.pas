@@ -374,7 +374,7 @@ var
  ctrlbuf,textbuf:pchar;
  ctrlsize,textsize:longint;
  pp,ppp:pchar;
- kluge,enter:pchar;
+ kludge,enter:pchar;
  ORIGIN:pchar;
  s:string;
  I:longint;
@@ -408,16 +408,16 @@ begin
     pp:=psearchI(textbuf,#$0d+' * Origin: ');
     while pp<>nil do begin pp[2]:='+'; pp:=psearchI(textbuf,#$0d+' * Origin: '); end;
 
-	{Entfernung alle Kluges am Ende der Nachricht}
+	{Entfernung alle Kludges am Ende der Nachricht}
     repeat
       enter:=strrscan(textbuf,#$0d);
       if enter=nil then break;
-      kluge:=strrscan(textbuf,#1);
-      if kluge=nil then break;
-      ppp:=strscan(kluge,#$0d);
+      kludge:=strrscan(textbuf,#1);
+      if kludge=nil then break;
+      ppp:=strscan(kludge,#$0d);
       if ppp=nil then break;
       if ppp=enter then begin
-        kluge[0]:=#0;
+        kludge[0]:=#0;
       end else break;
     until false;
 
@@ -437,7 +437,7 @@ begin
     destarea^.f^.closearea(destarea);
 end;
 
-function createkluges(orig,dest:netaddr;createmsgid:boolean):pchar;
+function createkludges(orig,dest:netaddr;createmsgid:boolean):pchar;
 var
  s:string;
  p:pchar;
@@ -454,7 +454,7 @@ begin
  end;
  p:=getmemory(length(s)+1);
  strpcopy(p,s);
- createkluges:=p;
+ createkludges:=p;
 end;
 
 procedure eval(xmsg:pxmsg;var textsize:longint;var textbuf:pchar);
@@ -559,7 +559,7 @@ begin
   xmsgnew^.date_arrived.time:=xmsgnew^.date_written.time;
 {Ersetze %?? durch Headerdaten}
   eval(xmsg,textsize,textbuf);
-  ctrlbuf:=createkluges(xmsgnew^.orig,xmsgnew^.dest,true);
+  ctrlbuf:=createkludges(xmsgnew^.orig,xmsgnew^.dest,true);
   if (p^.msgbase=nil) or (strpas(p^.msgbase)='') then begin
      newnr:=area^.high_msg+1;
      destmsg:=area^.f^.OpenMsg(area,MOPEN_CREATE,0);
@@ -641,7 +641,7 @@ begin
                          {Current Orig, Dest}
                          o:=xmsg^.orig; d:=xmsg^.dest;
                          getfulladdr(ctrlbuf,ctrlsize,o,d);
-                         {Change Orig, create new Kluges (intl, fmpt, topt}
+                         {Change Orig, create new Kludges (intl, fmpt, topt}
                          if p^.spe=actionrewriteFromAddr then begin
                            o:=p^.addr;
                            xmsg^.orig:=p^.addr;
@@ -650,7 +650,7 @@ begin
                            d:=p^.addr;
                            xmsg^.dest:=p^.addr;
                          end;
-                         pp:=createkluges(o,d,false);
+                         pp:=createkludges(o,d,false);
                          ppp:=getmemory(strlen(ctrlbuf)+strlen(pp)+1);
                          strcopy(ppp,pp);
                          strcat(ppp,ctrlbuf);

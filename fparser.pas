@@ -16,7 +16,7 @@ type
 
 procedure parser(var s:string;var x:pfparserknoten);
 const
- Symbole:array[5..22] of string=('SUBJ','FROM','TO','BODY','ORIG','DEST','LEN','OZONE','ONET','ONODE','OPOINT','DZONE','DNET','DNODE','DPOINT','FLAG','KLUGE','ANY');
+ Symbole:array[5..22] of string=('SUBJ','FROM','TO','BODY','ORIG','DEST','LEN','OZONE','ONET','ONODE','OPOINT','DZONE','DNET','DNODE','DPOINT','FLAG','KLUDGE','ANY');
 
 
 implementation
@@ -42,7 +42,7 @@ var
 	i:word;
 	position:word;
 begin
-	writeln('Vor: ',s);
+{	writeln('Vor: ',s);}
 	for i:=1 to high(rep) do begin
 		while pos(rep[i].orig,s)>0 do begin
 			position:=pos(rep[i].orig,s);
@@ -50,7 +50,7 @@ begin
 			insert(rep[i].repl,s,position);
 		end;
 	end;
-	writeln('Nach: ',s);
+{	writeln('Nach: ',s);}
 	unescape:=s;
 end;
 

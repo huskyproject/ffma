@@ -22,7 +22,7 @@ type
 function mstr(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 function mflag(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 function mbody(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
-function mkluge(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
+function mkludge(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 function mzahl(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 function maddr(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 
@@ -72,7 +72,7 @@ const
  (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,maddr,maddr,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,mflag, nil ), {ADDR}
  (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,mbody,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {Flags}
 
- (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, mkluge ), {SUBJ}
+ (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, mkludge ), {SUBJ}
  (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {FROM}
  (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {TO}
  (nil ,mbody,nil ,nil ,mbody,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {BODY}
@@ -91,7 +91,7 @@ const
  (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {DZONE}
 
  (nil ,nil ,nil ,nil ,mflag  ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil),  {Flag }
- (nil ,mkluge ,nil ,nil ,nil  ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil)  {Flag }
+ (nil ,mkludge ,nil ,nil ,nil  ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil)  {Flag }
 );
 	{$endif}
  flags:array[1..12] of record s:String; x:word; end=
@@ -222,7 +222,7 @@ begin
  freememory(pp,true);
 end;
 
-function mkluge(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;
+function mkludge(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;
 var
 	s:string;
 	not_:boolean;
@@ -233,17 +233,17 @@ var
 begin	
 	not_:=false;
 	if x^.ele<>'=' then begin
-		writeln('Error: ',x^.ele,' not supported in kluge-statment'); halt;
+		writeln('Error: ',x^.ele,' not supported in kludge-statment'); halt;
 	end;
-	if x^.r^.ele='KLUGE' then begin
+	if x^.r^.ele='KLUDGE' then begin
 		s:=get(x^.l^.ele,area,msg,xmsg,x);
 	end else begin
 		s:=get(x^.r^.ele,area,msg,xmsg,x);
 	end;
 	if (length(s)>0) and (s[1]='!') then begin not_:=true; delete(s,1,1); end;
-	if (length(s)>0) and (s[1]='~') then begin writeln('~ not neccessary in kluge-statment'); delete(s,1,1); end;
+	if (length(s)>0) and (s[1]='~') then begin writeln('~ not neccessary in kludge-statment'); delete(s,1,1); end;
 	ctrlsize:=area^.f^.GetCtrlLen(msg);
-	if ctrlsize=0 then begin mkluge:=false; exit; end;
+	if ctrlsize=0 then begin mkludge:=false; exit; end;
 
 	p:=getmemory(ctrlsize+1);
 	area^.f^.ReadMsg(msg,xmsg,0,0,nil,ctrlsize,p);
@@ -254,7 +254,7 @@ begin
 
 	b:=psearchi(p,pp)<>nil;
 	if not_ then b:=not b;
-	mkluge:=b;
+	mkludge:=b;
 	freememory(p,true);
 	freememory(pp,true);
 end;
