@@ -58,7 +58,7 @@ const
  (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {DZONE}
 
  (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mflag  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil))  {Flag }
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfpkt(nil)  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil))  {Flag }
+ (matchfkt(nil) ,mkludge ,matchfkt(nil) ,matchfkt(nil) ,matchfpkt(nil)  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil))  {Flag }
 );
 	{$else}
 {                                **************STATIC TEXT********************************************************************
