@@ -1,25 +1,41 @@
 # include Husky-Makefile-Config
 include ../huskymak.cfg
+INCDIR=../fidoconfig
 
 ifeq ($(DEBUG), 1)
-  POPT = -g -v0 -XS -Co -Ci -Cr -Ct -ddebugit
+  POPT = -g -XS -Co -Ci -Cr -Ct -ddebugit
 else
   POPT = -v0  -XS -Co -Ci -Cr -Ct
+endif
+
+LOPT = -Fl$(LIBDIR)
+
+ifeq ($(UNAME), LNX)
+  UNAMELONG = linux
+else
+  UNAMELONG = $(UNAME)
 endif
 
 all: ffma$(EXE)
 
 ffma$(EXE): fidoconf2.pas erweiter.pas fparser.pas memman.pas utils.pas \
-            log.pas ini.pas match.pas fidoconfig.pas smapi.pas
-	$(PC) $(POPT) -T$(UNAMELONG) ffma.pas
+            log.pas ini.pas match.pas fidoconf.pas smapi.pas ffma.pas
+	$(PC) $(POPT) $(LOPT) -T$(UNAMELONG) ffma.pas
+
+fidoconf.pas: $(INCDIR)/fidoconfig.h
+	h2pas -u fidoconf -p -l fidoconfig -s -d -o /dev/stdout \
+         $(INCDIR)/fidoconfig.h | sed -e 's/\^char/pchar/g' \
+         -e 's/\^Double;/\^Double; PFile = ^File;/' \
+         -e 's/function strend(str : longint) : longint;/function strend(str : pchar) : pchar;/' \
+         > fidoconf.pas
 
 install: ffma$(EXE)
 	$(INSTALL) $(IBOPT) ffma$(EXE) $(BINDIR)
 
 clean:
 	-$(RM) *$(OBJ)
-        -$(RM) *$(LIB)
-        -$(RM) *$(TPU)
+	-$(RM) *$(LIB)
+	-$(RM) *$(TPU)
 
 distclean: clean
 	-$(RM) ffma$(EXE)

@@ -30,14 +30,14 @@ program ffma;
 
 {$ifdef fpc}
 	{$ifdef linux}
-     Uses ini,erweiter,strings,utils,fparser,memman,log,smapi,match,fidoconfig,fidoconf2;
+     Uses ini,erweiter,strings,utils,fparser,memman,log,smapi,match,fidoconf,fidoconf2;
 	{$endif}
 {$endif}
 
 
 const
 	configfile:string='/etc/fido/ffma.ini';
-	version='0.06.00';
+	version='0.06.01';
     compiler:string='Unknown';
 
 type
@@ -54,7 +54,7 @@ const
  ffmauid:string='';
 
 var
- fc:psfidoconfig;
+ fc:ps_fidoconfig;
  para:record
         debug:boolean;
         help:boolean;
@@ -167,9 +167,9 @@ begin
  end;
 end;
 
-procedure doaction(p:paction;fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;var num:longint;var del:boolean);forward;
+procedure doaction(p:paction;fcarea:ps_area;var area:pharea;var msg:phmsg;var xmsg:pxmsg;var num:longint;var del:boolean);forward;
 
-procedure dodostatment(fcarea:parea;area:pharea;nr:longint;mask:pmask);
+procedure dodostatment(fcarea:ps_area;area:pharea;nr:longint;mask:pmask);
 var
  del:boolean;
  msg:phmsg;
@@ -209,11 +209,11 @@ begin
  close(f);
 end;
 
-procedure actioncopy(farea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
+procedure actioncopy(farea:ps_area;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
 var
  destarea:pharea;
  destmsg:phmsg;
- destfcarea:parea;
+ destfcarea:ps_area;
 
  ctrlbuf,textbuf:pchar;
  ctrlsize,textsize:longint;
@@ -249,7 +249,7 @@ begin
     destarea^.f^.closearea(destarea);
 end;
 
-procedure actionexportheader(fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;ziel:string);
+procedure actionexportheader(fcarea:ps_area;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;ziel:string);
 var
  f:text;
  s,t:string;
@@ -276,7 +276,7 @@ begin
     close(f);
 end;
 
-procedure actionexportmsg(fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;ziel:string);
+procedure actionexportmsg(fcarea:ps_area;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;ziel:string);
 var
  textbuf:pchar;
  textsize,i:longint;
@@ -329,13 +329,13 @@ begin
 end;
 
 
-procedure actionechocopy(fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;a:paction);
+procedure actionechocopy(fcarea:ps_area;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;a:paction);
 const
  deforigin=#$0d+'---'+#$0d+' * Origin: Default ';
 var
  destarea:pharea;
  destmsg:phmsg;
- destfcarea:parea;
+ destfcarea:ps_area;
  ctrlbuf,textbuf:pchar;
  ctrlsize,textsize:longint;
  pp,ppp:pchar;
@@ -480,11 +480,11 @@ begin
 end;
 
 
-procedure actionbounce(fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
+procedure actionbounce(fcarea:ps_area;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
 var
  f:file;
  destarea:pharea;
- destfcarea:parea;
+ destfcarea:ps_area;
  xmsgnew:pxmsg;
  msgnew:phmsg;
  textsize:longint;
@@ -572,7 +572,7 @@ begin
   end;
 end;
 
-procedure actionrewrite(var fcara:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
+procedure actionrewrite(var fcara:ps_area;var area:pharea;var msg:phmsg;var xmsg:pxmsg;num:word;p:paction);
 var
  s:string;
  i:word;
@@ -651,7 +651,7 @@ begin
  close(f);
 end;
 
-procedure doaction(p:paction;fcarea:parea;var area:pharea;var msg:phmsg;var xmsg:pxmsg;var num:longint;var del:boolean);
+procedure doaction(p:paction;fcarea:ps_area;var area:pharea;var msg:phmsg;var xmsg:pxmsg;var num:longint;var del:boolean);
 begin
  del:=false;
  while p<>nil do begin
@@ -692,7 +692,7 @@ end;
 
 
 
-procedure scan(fc:psfidoconfig);
+procedure scan(fc:ps_fidoconfig);
 Var
  area:pharea;
  msg:phmsg;
@@ -703,7 +703,7 @@ Var
  anz:longint;
  del:boolean;
  uid:longint;
- a:parea;
+ a:ps_area;
 begin
  l:=liste;
  while l<>nil do begin
@@ -720,7 +720,7 @@ begin
     writeln('Scanning '+strpas(l^.msgbase)+' ',area^.num_msg,' Mails');
     new(xmsg);
     num:=1;
-    anz:=area^.num_msg;
+    anz:=area^.high_msg;
     {UID}
     if getuid(strpas(l^.msgbase),uid) then begin
        num:=area^.f^.UidToMsgn(area,uid,uid_exact);
@@ -744,7 +744,7 @@ begin
     while num<=anz do begin
       msg:=area^.f^.OpenMsg(area,MOPEN_READ,num);
       if msg=nil then begin
-        logit(1,'Message '+z2s(num)+' does not exist');
+{        logit(1,'Message '+z2s(num)+' does not exist');}
 		inc(num);
 		continue;
       end;
@@ -755,7 +755,7 @@ begin
       del:=false;
       while (mask<>nil) and (del=false) do begin
          if mask^.search=nil then begin writeln('no search statment for ',mask^.maskname); halt; end;
-         if match_(area,msg,xmsg,mask^.search)  then begin
+         if (mask^.search^.l^.ele = 'ANY') or match_(area,msg,xmsg,mask^.search) then begin
 			inc(mask^.hits);
             logit(4,'Message '+z2s(num)+'/'+z2s(anZ)+' '+array2string(xmsg^.subj,72)+' matchs to  '+mask^.maskname);
             if not para.test then doaction(mask^.action,a,area,msg,xmsg,num,del);
@@ -766,6 +766,7 @@ begin
       if del then begin
          logit(4,'Deleting Message '+z2s(num));
          if area^.f^.KillMsg(area,num) <>0 then begin logit(9,'Could not delete Message Nr.'+z2s(num)); halt; end;
+         if (area^.type_ <> MSGTYPE_SQUISH) then inc(num);
       end else begin
          inc(num);
       end;
@@ -883,7 +884,7 @@ Var
  area:pharea;
  l:pliste;
  anz:longint;
- fcarea:parea;
+ fcarea:ps_area;
 begin
  l:=liste;
  while l<>nil do begin
@@ -896,8 +897,8 @@ begin
     area^.f^.lock(area);
     if InvalidMh(area) then begin logit(9,'Invalid handle to Msgbase'); halt; end;
 {    if area^.num_msg<>area^.high_msg then begin logit(9,'NUM_MSG<>HIGH_MSG'); halt; end;}
-    anz:=area^.num_msg;
-    logit(3,strpas(l^.msgbase)+': Msg '+z2s(area^.num_msg)+' Uid:'+z2s(area^.f^.msgntouid(area,anz)));
+    anz:=area^.high_msg;
+    logit(3,strpas(l^.msgbase)+': Msg '+z2s(area^.high_msg)+' Uid:'+z2s(area^.f^.msgntouid(area,anz)));
     if anz>0 then storeuid(uidlisteout,strpas(l^.msgbase),area^.f^.msgntouid(area,anz));
     area^.f^.unlock(area);
     area^.f^.closearea(area);

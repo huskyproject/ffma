@@ -10,14 +10,14 @@ interface
 
 {$ifdef fpc}
 	{$ifdef linux}
-	uses fparser,utils,erweiter,strings,log,smapi,memman,fidoconfig,fidoconf2;
+	uses fparser,utils,erweiter,strings,log,smapi,memman,fidoconf,fidoconf2;
 	{$define havedosunit}
 	{$endif}
 {$endif}
 
 
 
-procedure readini(filename:string;fc:psfidoconfig);
+procedure readini(filename:string;fc:ps_fidoconfig);
 
 type
  paction=^taction;
@@ -47,7 +47,7 @@ type
          next:pliste;
         end;
  type
-  tparafkt=function(s:string;x:paction;y:psfidoconfig):boolean;
+  tparafkt=function(s:string;x:paction;y:ps_fidoconfig):boolean;
   tini_=record a:word; s:string; need:word; can:word; end;
   tpara_=record p:tparafkt; s:string; v:word; end;
   tspe_=record a:word; v:word; s:string; para:word; end;
@@ -93,12 +93,12 @@ const
 
 
 implementation
-function dostatment(s:string;p:paction;fc:psfidoconfig):boolean;forward;
-function msgbase(s:string;p:paction;fc:psfidoconfig):boolean;forward;
-function addr(s:string;p:paction;fc:psfidoconfig):boolean;forward;
-function testfile(s:string;p:paction;fc:psfidoconfig):boolean;forward;
-function seenby(s:string;p:paction;fc:psfidoconfig):boolean;forward;
-function textstatment(s:string;p:paction;fc:psfidoconfig):boolean;forward;
+function dostatment(s:string;p:paction;fc:ps_fidoconfig):boolean;forward;
+function msgbase(s:string;p:paction;fc:ps_fidoconfig):boolean;forward;
+function addr(s:string;p:paction;fc:ps_fidoconfig):boolean;forward;
+function testfile(s:string;p:paction;fc:ps_fidoconfig):boolean;forward;
+function seenby(s:string;p:paction;fc:ps_fidoconfig):boolean;forward;
+function textstatment(s:string;p:paction;fc:ps_fidoconfig):boolean;forward;
 
 const
   spe_:array[1..6] of tspe_=(
@@ -163,7 +163,7 @@ begin
  end;
 end;
 
-procedure maskinsert(fc:psfidoconfig;m:pmask;msgbase:string;var p:pliste);
+procedure maskinsert(fc:ps_fidoconfig;m:pmask;msgbase:string;var p:pliste);
 var
  l:pliste;
  n:pliste;
@@ -190,33 +190,33 @@ begin
  end;
 end;
 
-function seenby(s:string;p:paction;fc:psfidoconfig):boolean;
+function seenby(s:string;p:paction;fc:ps_fidoconfig):boolean;
 begin
  seenby:=true;
  p^.seenby:=copy(s,8,255);
 end;
 
-function textstatment(s:string;p:paction;fc:psfidoconfig):boolean;
+function textstatment(s:string;p:paction;fc:ps_fidoconfig):boolean;
 begin
  textstatment:=true;
  p^.str:=copy(s,6,255);
 end;
 
-function dostatment(s:string;p:paction;fc:psfidoconfig):boolean;
+function dostatment(s:string;p:paction;fc:ps_fidoconfig):boolean;
 begin
  p^.dostat:=findmask(copy(s,4,255),liste);
  dostatment:=p^.dostat<>nil;
 end;
 
-function testfile(s:string;p:paction;fc:psfidoconfig):boolean;
+function testfile(s:string;p:paction;fc:ps_fidoconfig):boolean;
 begin
  testfile:=true;
  p^.filename:=copy(s,3,255);
 end;
 
-function msgbase(s:string;p:paction;fc:psfidoconfig):boolean;
+function msgbase(s:string;p:paction;fc:ps_fidoconfig):boolean;
 var
- area:parea;
+ area:ps_area;
 begin
  getmem(p^.msgbase,length(copy(s,4,255))+1);
  StrPCopy(p^.msgbase,copy(s,4,255));
@@ -228,7 +228,7 @@ begin
  msgbase:=true;
 end;
 
-function addr(s:string;p:paction;fc:psfidoconfig):boolean;
+function addr(s:string;p:paction;fc:ps_fidoconfig):boolean;
 begin
  addr:=string2addr(copy(s,6,255),p^.addr);
 end;
@@ -301,7 +301,7 @@ begin
  foundpara:=0;
 end;
 
-procedure readini(filename:string;fc:psfidoconfig);
+procedure readini(filename:string;fc:ps_fidoconfig);
 type
         tarea_array=array[1..maxint] of area;
         Parea_array=^tarea_array;

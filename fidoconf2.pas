@@ -9,31 +9,32 @@ uses gpcstrings,gpcfidoconf;
 
 {$ifdef fpc}
 	{$ifdef linux}
-    uses fidoconfig,strings;
+    uses fidoconf,strings;
 	{$endif}
+{$linklib fidoconfig}
 {$endif}
 
 
 {Improved getarea}
-function Getareaimp(config:psfidoconfig; areaName:pchar):Parea;
+function Getareaimp(config:ps_fidoconfig; areaName:pchar):ps_area;
 
 implementation
 
-function Getareaimp(config:psfidoconfig; areaName:pchar):Parea;
+function Getareaimp(config:ps_fidoconfig; areaName:pchar):ps_area;
 type
  area_array=array[1..10000] of area;
- Parea_array=^area_array;
+ ps_area_array=^area_array;
 var 
- a:parea;
- aa:parea_array;
+ a:ps_area;
+ aa:ps_area_array;
  i:integer;
  p:pointer;
 begin
 {Netmailarea?}
 {$ifdef __GPC__}
-	aa:=parea_array(config^.netmailareas^);  
+	aa:=ps_area_array(config^.netmailareas^);  
 {$else}
-	aa:=addr(config^.netmailareas^);
+	aa:= ps_area_array(config^.netmailareas);
 {$endif}
 
 if stricomp(areaname,'netmailarea')=0 then begin
@@ -56,9 +57,9 @@ if a=@config^.dupearea then a:=nil;
 {localarea}
 if a=nil then begin
 	{$ifdef __GPC__}
-	aa:=parea_array(config^.localareas^);  
+	aa:=ps_area_array(config^.localareas^);  
 	{$else}
-	aa:=addr(config^.localareas^);
+	aa:=ps_area_array(config^.localareas);
 	{$endif}
     for i:=1 to config^.localareacount do begin
 		{$ifdef __GPC__}

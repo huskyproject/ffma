@@ -4,6 +4,7 @@ if [ ! -x h2pas ]
 then
 	echo H2PAS-binary not found. Starting Compiler
 	ppc386 -v0 h2pas
+        echo done
 fi
 if [ ! -x h2pas ] 
 then
@@ -23,7 +24,7 @@ grep -v -G 'typedef ' ../../fidoconfig/fidoconfig.h>h2pas.temp2
 cat h2pas.temp | sed --file fidoconfH2PAS >h2pas.temp2
 mv ../fidoconfig.pas ../fidoconfig.old
 cat h2pas.temp2>../fidoconfig.pas
-rm -f h2pas.temp*
+# rm -f h2pas.temp*
 if [ -s ../fidoconfig.pas ]
 then
 	echo fidoconfig.pas created

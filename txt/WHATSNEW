@@ -2,6 +2,15 @@
 -Changes
 !Bugfix
 
+0.06.01 --- 23.03.00 (sms)
+==========================
+! incrementing message number on delete in SDM and JAM areas
+! scanning messages up to high_msg (num_msg != high_msg for SDM!)
++ search-type "ANY" matches any mail
+- made compilable with h2pas of fpc 0.99.15
+- automatic generation of fidoconf.pas via makefile.husky
+- deactivated "message does not exist" (gets rather annyoing for SDM areas)
+
 0.06.00 --- 16.12.99
 ====================
 !action bounce generated an wrong fts-date-filed

@@ -23,7 +23,7 @@ const
  MOPEN_RW:word=3;
 
 {$ifdef LINUX}
-  {$linklib smapilnx}
+  {$linklib smapi}
   {$linklib gcc}
   {$linklib c}
 {$endif}
