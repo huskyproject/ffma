@@ -1,0 +1,26 @@
+# include Husky-Makefile-Config
+include ../huskymak.cfg
+
+ifeq ($(DEBUG), 1)
+  POPT = -g -v0 -XS -Co -Ci -Cr -Ct -ddebugit
+else
+  POPT = -v0  -XS -Co -Ci -Cr -Ct
+endif
+
+all: ffma$(EXE)
+
+ffma$(EXE): fidoconf2.pas erweiter.pas fparser.pas memman.pas utils.pas \
+            log.pas ini.pas match.pas fidoconfig.pas smapi.pas
+	$(PC) $(POPT) -T$(UNAMELONG) ffma.pas
+
+install: ffma$(EXE)
+	$(INSTALL) $(IBOPT) ffma$(EXE) $(BINDIR)
+
+clean:
+	-$(RM) *$(OBJ)
+        -$(RM) *$(LIB)
+        -$(RM) *$(TPU)
+
+distclean: clean
+	-$(RM) ffma$(EXE)
+
