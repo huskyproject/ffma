@@ -233,8 +233,8 @@ begin
  time:=(sec div 2)+(min shl 5)+(h shl 11);
  date:=d+(m shl 5)+((y-1980) shl 9);
  fillchar(fts,sizeof(fts),0);
- s:='Date: '+day[dow]+', '+z2s_nullen(d,2)+' '+month[m]+' '+z2s(y)+' '+z2s_nullen(h,2)+':'+z2s_nullen(min,2)+':'+
- z2s_nullen(sec,2)+' +0100';
+{ s:=day[dow]+', '+z2s_nullen(d,2)+' '+month[m]+' '+z2s(y)+' '+z2s_nullen(h,2)+':'+z2s_nullen(min,2)+':'+z2s_nullen(sec,2)+' +0100';}
+ s:=z2s_nullen(d,2)+' '+month[m]+' '+z2s_nullen(y mod 100,2)+'  '+z2s_nullen(h,2)+':'+z2s_nullen(min,2)+':'+z2s_nullen(sec,2);
  for i:=1 to length(s) do begin
   fts[i-1]:=s[i]; if i=20 then break;
  end;

@@ -37,7 +37,7 @@ program ffma;
 
 const
 	configfile:string='/etc/fido/ffma.ini';
-	version='pre 0.05.05';
+	version='0.06.00';
     compiler:string='Unknown';
 
 type
@@ -51,9 +51,9 @@ type
 const
  uidliste:puid=nil;
  uidlisteout:puid=nil;
+ ffmauid:string='';
 
 var
- ffmauid:string;
  fc:psfidoconfig;
  para:record
         debug:boolean;
@@ -495,6 +495,9 @@ var
  del:boolean;
 begin
   assign(f,p^.filename);
+ if not exist(P^.filename) then begin 
+ 	logit(9,'File '+p^.filename+' not found!'); halt; 
+ end;
  {$ifdef __GPC__}
  reset(f);
  {$else}
@@ -522,7 +525,7 @@ begin
 {Ersetze %?? durch Headerdaten}
   eval(xmsg,textsize,textbuf);
   ctrlbuf:=createkluges(xmsgnew^.orig,xmsgnew^.dest,true);
-  if strpas(p^.msgbase)='' then begin
+  if (p^.msgbase=nil) or (strpas(p^.msgbase)='') then begin
      newnr:=area^.high_msg+1;
      destmsg:=area^.f^.OpenMsg(area,MOPEN_CREATE,0);
      destarea:=area;
@@ -563,6 +566,7 @@ begin
   destarea^.f^.closemsg(destmsg);
   dispose(xmsgnew);
   if p^.dostat<>nil then dodostatment(destfcarea,destarea,newnr,p^.dostat);
+  if p^.msgbase<>nil then 
   if strpas(p^.msgbase)<>'' then begin
      destarea^.f^.closearea(area);
   end;
@@ -822,6 +826,7 @@ begin
  writeln('--save          Save the UID of the last Message after scanning. (Default)');
  writeln;
  writeln('--config=<file> Configfile (Default --config=/etc/fido/ffma)');
+ writeln('--uid=<file>    File where ffma should save the uid''s.');
  writeln('--help          Help');
 end;
 
@@ -859,6 +864,12 @@ begin
       if copy(up(s),1,3)='-C' then delete(s,1,3) else delete(s,1,9);
       if not exist(s) then begin writeln('File not found: `',s,'`'); halt; end;
       configfile:=s;
+      continue;
+    end;
+    if (copy(s,1,3)='-U=') or (copy(s,1,6)='--UID=') then begin
+      s:=paramstr(i);
+      if copy(up(s),1,3)='-U' then delete(s,1,3) else delete(s,1,6);
+      ffmauid:=s;
       continue;
     end;
     writeln('unrecognized option/command `'+paramstr(i)+'`'); halt;
@@ -934,12 +945,14 @@ begin
 
 	 checkpara;
 	 readini(configfile,fc);
-	 ffmauid:=getConfigFileName;
-	 for i:=length(ffmauid) downto 1 do begin
-		if ffmauid[i] in ['\','/'] then break;
-		delete(ffmauid,i,1);
-	 end;
-	ffmauid:=ffmauid+'ffma.uid';
+	 if ffmauid='' then begin
+		 ffmauid:=getConfigFileName;
+		 for i:=length(ffmauid) downto 1 do begin
+			if ffmauid[i] in ['\','/'] then break;
+			delete(ffmauid,i,1);
+		 end;
+		 ffmauid:=ffmauid+'ffma.uid';
+	end;
 
  {Open Smapi}
  new(m); m^.req_version:=0; m^.def_zone:=2;
@@ -960,7 +973,7 @@ begin
  msgcloseapi; dispose(m);
 
  {Saving UID}
- if para.save then writeuidtofile(uidlisteout);
+ if (para.save) and (not para.test) then writeuidtofile(uidlisteout);
 
  {Cleanup}
  shownotfree;

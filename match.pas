@@ -212,7 +212,6 @@ begin
  p:=getmemory(textsize+1);
  area^.f^.ReadMsg(msg,xmsg,0,textsize,p,0,nil);
  p[textsize]:=#0;
-{ for i:=0 to textsize-1 do if p[i]=#0 then p[i]:=' ';}
 
  pp:=getmemory(length(s)+1);
  strpcopy(pp,s);
@@ -226,6 +225,7 @@ begin
       for i:=1 to 8 do name:=name+conv[random(16)+1];
       name:='ffma_'+name;
    until not exist(name);
+  for i:=0 to textsize-1 do if p[i]=#0 then logit(0,'0-Byte found: '+name);
 
 	assign(f,name);
 	rewrite(f,1);

@@ -26,7 +26,7 @@ nothing-specified:
 linux: ffma.pas
 	make -f makefile.fpc linux
 
-linuxdebug: ffma.pas
+linux-debug: ffma.pas
 	make -f makefile.fpc linuxdebug
 
 linux-install: linux

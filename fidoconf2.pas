@@ -41,9 +41,11 @@ if stricomp(areaname,'netmailarea')=0 then begin
     exit;
 end;
 
-if stricomp(areaname,aa^[1].areaname)=0 then begin
-	getareaimp:=@aa^[1];
-    exit;
+for i:=1 to config^.netmailareacount do begin
+	if stricomp(areaname,aa^[i].areaname)=0 then begin
+		getareaimp:=@aa^[i];
+	    exit;
+	end;
 end;
 
 {normal area?}
