@@ -10,21 +10,21 @@ endif
 ifeq ($(DEBUG), 1)
 #  POPT = -g  -XS -Co -Ci -Cr -Ct -ddebugit
 ifeq ($(PC), ppc386)
-  POPT = -g  -XS -Co -Ci -Cr -Ct -T$(UNAMELONG) -DPASCAL
+  POPT = -g  -XS -Co -Ci -Cr -Ct -T$(UNAMELONG) -dPASCAL
   LOPT = -Fl$(LIBDIR)
   PCOPT =
 else
-  POPT = -g -T$(UNAMELONG) -dPASCAL
+  POPT = -g -T$(UNAMELONG) -DPASCAL
   POPT = -L$(LIBDIR)
   PCOPT = -c
 endif
 else
 ifeq ($(PC), ppc386)
-  POPT = -v0 -XS -Co -Ci -Cr -Ct -DPASCAL
+  POPT = -v0 -XS -Co -Ci -Cr -Ct -dPASCAL
   LOPT = -Fl$(LIBDIR)
   PCOPT =
 else
-  POPT = -dPASCAL
+  POPT = -DPASCAL
   LOPT = -L$(LIBDIR)
   PCOPT = -c
 endif
@@ -42,6 +42,7 @@ fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 	 -e 's/\^Double;/\^Double; PFile = ^File;/' \
 	 -e 's/function strend(str : longint) : longint;/function strend(str : pchar) : pchar;/' \
 	| grep -v '^{$$include' \
+	| grep -v "[^']*';$$" \
 	> fidoconf.pas
 endif
 

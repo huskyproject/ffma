@@ -31,11 +31,9 @@ unit fidoconf;
 {$ifdef UNIX}
 
   const
-     PATH_DELIM = '/';
 {$else}
 
   const
-     PATH_DELIM = '\\';
 {$endif}
   { was #define dname(params) def_expr }
   { argument types are unknown }
@@ -46,9 +44,6 @@ unit fidoconf;
 {$ifndef PASCAL}
 
     var
-       actualLine : pchar;cvar;externalactualLine';
-       actualLineNr : longint;cvar;externalactualLineNr';
-       wasError : char;cvar;externalwasError';
 {$endif}
 
   function striptwhite(str:pchar):pchar;cdecl;
