@@ -22,6 +22,7 @@ ffma$(EXE): fidoconf2.pas erweiter.pas fparser.pas memman.pas utils.pas \
             log.pas ini.pas match.pas fidoconf.pas smapi.pas ffma.pas
 	$(PC) $(POPT) $(LOPT) -T$(UNAMELONG) ffma.pas
 
+ifdef H2PAS
 fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 	cat $(INCDIR)/fidoconf/fidoconf.h \
 	 | awk 'BEGIN { cpp=0; } { if (($$1 == "#ifdef") && ($$2 == "__cplusplus")) { cpp=1; } else if (($$1 == "#endif") && (cpp == 1)) { cpp=0; } else if (cpp == 1) { printf "\n" } else { print; } }' > fidoconf.h
@@ -30,6 +31,7 @@ fidoconf.pas: $(INCDIR)/fidoconf/fidoconf.h
 	 -e 's/\^Double;/\^Double; PFile = ^File;/' \
 	 -e 's/function strend(str : longint) : longint;/function strend(str : pchar) : pchar;/' \
 	 > fidoconf.pas
+endif
 
 install: ffma$(EXE)
 	$(INSTALL) $(IBOPT) ffma$(EXE) $(BINDIR)
