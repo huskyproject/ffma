@@ -22,6 +22,7 @@ type
 function mstr(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 function mflag(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 function mbody(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
+function mkluge(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 function mzahl(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 function maddr(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;forward;
 
@@ -30,62 +31,67 @@ const
 {                                **************STATIC TEXT********************************************************************
                                    SUB         TO         Orig        LEN    **********ORIG******** **********DEST********
         Str  Zahl   ADDR  FLAGS        FROM         Body       Dest         Zone  NET  NODE   PONT Zone  NET  NODE   PONT   Flag                                       }
- m:array[0..20,0..20] of matchfkt=
+ m:array[0..21,0..21] of matchfkt=
  ( 
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ),
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  mstr ,mstr ,mstr ,mbody,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ), {String}
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {Zahl}
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,maddr,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mflag), {ADDR}
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mbody,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)), {Flags}
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil) ),
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  mstr ,mstr ,mstr ,mbody,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil) ), {String}
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {Zahl}
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,maddr,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mflag,matchfkt(nil)), {ADDR}
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mbody,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil,matchfkt(nil)) ,matchfkt(nil)), {Flags}
 
- (matchfkt(nil) ,mstr ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)), {SUBJ}
- (matchfkt(nil) ,mstr ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)), {FROM}
- (matchfkt(nil) ,mstr ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)), {TO}
- (matchfkt(nil) ,mbody,matchfkt(nil) ,matchfkt(nil) ,mbody,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)), {BODY}
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)), {ORIG}
+ (matchfkt(nil) ,mstr ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)), {SUBJ}
+ (matchfkt(nil) ,mstr ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)), {FROM}
+ (matchfkt(nil) ,mstr ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)), {TO}
+ (matchfkt(nil) ,mbody,matchfkt(nil) ,matchfkt(nil) ,mbody,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)), {BODY}
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)), {ORIG}
 
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)), {DEST}
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil)),  {LEN}
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {OZONE}
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {ONET}
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {ONODE}
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,maddr,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)), {DEST}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil)),  {LEN}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {OZONE}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {ONET}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {ONODE}
 
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {OZONE}
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {DZONE}
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {DNET}
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {DNODE}
- (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil)), {DZONE}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {OZONE}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {DZONE}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {DNET}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {DNODE}
+ (matchfkt(nil) ,matchfkt(nil) ,mzahl,matchfkt(nil) ,matchfkt(nil) ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,matchfkt(nil),matchfkt(nil)), {DZONE}
 
- (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mflag  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil))  {Flag }
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,mflag  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil))  {Flag }
+ (matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfpkt(nil)  ,  matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil) ,matchfkt(nil),matchfkt(nil))  {Flag }
 );
 	{$else}
- m:array[0..20,0..20] of matchfkt=
+{                                **************STATIC TEXT********************************************************************
+                                   SUB         TO         Orig        LEN    **********ORIG******** **********DEST********
+ Str   Zahl ADDR FLAGS        FROM         Body       Dest         Zone  NET  NODE   PONT Zone  NET  NODE   PONT   Flag                                       }
+ m:array[0..21,0..21] of matchfkt=
  ( 
- (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ),
- (nil ,nil ,nil ,nil ,nil ,  mstr ,mstr ,mstr ,mbody,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ), {String}
- (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {Zahl}
- (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,maddr,maddr,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,mflag), {ADDR}
- (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,mbody,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil), {Flags}
+ (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ),
+ (nil ,nil ,nil ,nil ,nil ,  mstr ,mstr ,mstr ,mbody,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil , nil ), {String}
+ (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {Zahl}
+ (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,maddr,maddr,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,mflag, nil ), {ADDR}
+ (nil ,nil ,nil ,nil ,nil ,  nil ,nil ,nil ,mbody,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {Flags}
 
- (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil), {SUBJ}
- (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil), {FROM}
- (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil), {TO}
- (nil ,mbody,nil ,nil ,mbody,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil), {BODY}
- (nil ,nil ,nil ,maddr,nil ,  nil ,nil ,nil ,nil ,nil ,maddr,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil), {ORIG}
+ (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, mkluge ), {SUBJ}
+ (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {FROM}
+ (nil ,mstr ,nil ,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {TO}
+ (nil ,mbody,nil ,nil ,mbody,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {BODY}
+ (nil ,nil ,nil ,maddr,nil ,  nil ,nil ,nil ,nil ,nil ,maddr,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {ORIG}
 
- (nil ,nil ,nil ,maddr,nil ,  nil ,nil ,nil ,nil ,maddr,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil), {DEST}
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil),  {LEN}
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {OZONE}
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {ONET}
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {ONODE}
+ (nil ,nil ,nil ,maddr,nil ,  nil ,nil ,nil ,nil ,maddr,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ), {DEST}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil ),  {LEN}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {OZONE}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {ONET}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {ONODE}
 
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {OZONE}
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {DZONE}
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {DNET}
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {DNODE}
- (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil), {DZONE}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {OZONE}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {DZONE}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {DNET}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {DNODE}
+ (nil ,nil ,mzahl,nil ,nil ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,mzahl,nil, nil ), {DZONE}
 
- (nil ,nil ,nil ,nil ,mflag  ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil)  {Flag }
+ (nil ,nil ,nil ,nil ,mflag  ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil),  {Flag }
+ (nil ,mkluge ,nil ,nil ,nil  ,  nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil ,nil, nil)  {Flag }
 );
 	{$endif}
  flags:array[1..12] of record s:String; x:word; end=
@@ -181,19 +187,12 @@ begin
 end;
 
 function mbody(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;
-const
-	conv:string='0123456789abcdef';
- 
 var
  s:string;
  not_:boolean;
  i,textsize:longint;
  ppp,p,pp:pchar;
  b:boolean;
- {$ifdef debugit} 
-	name:string;
-	f:file;
- {$endif debug}
 begin	
  not_:=false;
  if x^.ele<>'=' then begin
@@ -218,30 +217,46 @@ begin
 
  b:=psearchi(p,pp)<>nil;
  if not_ then b:=not b;
- {$ifdef debugit}
- if b then begin
-    repeat
-      name:='';
-      for i:=1 to 8 do name:=name+conv[random(16)+1];
-      name:='ffma_'+name;
-   until not exist(name);
-  for i:=0 to textsize-1 do if p[i]=#0 then logit(0,'0-Byte found: '+name);
-
-	assign(f,name);
-	rewrite(f,1);
-	blockwrite(f,p[0],textsize+1);
-	close(f);
-
-	assign(f,name+'_');
-	rewrite(f,1);
-	blockwrite(f,pp[0],length(s)+1);
-	close(f);
-	logit(0,'MBODY FILE:'+name+' Serach: >'+s+'<');
- end;
- {$endif}
  mbody:=b;
  freememory(p,true);
  freememory(pp,true);
+end;
+
+function mkluge(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;
+var
+	s:string;
+	not_:boolean;
+	i,ctrlsize:longint;
+	ppp,p,pp:pchar;
+	b:boolean;
+	F:file;
+begin	
+	not_:=false;
+	if x^.ele<>'=' then begin
+		writeln('Error: ',x^.ele,' not supported in kluge-statment'); halt;
+	end;
+	if x^.r^.ele='KLUGE' then begin
+		s:=get(x^.l^.ele,area,msg,xmsg,x);
+	end else begin
+		s:=get(x^.r^.ele,area,msg,xmsg,x);
+	end;
+	if (length(s)>0) and (s[1]='!') then begin not_:=true; delete(s,1,1); end;
+	if (length(s)>0) and (s[1]='~') then begin writeln('~ not neccessary in kluge-statment'); delete(s,1,1); end;
+	ctrlsize:=area^.f^.GetCtrlLen(msg);
+	if ctrlsize=0 then begin mkluge:=false; exit; end;
+
+	p:=getmemory(ctrlsize+1);
+	area^.f^.ReadMsg(msg,xmsg,0,0,nil,ctrlsize,p);
+	p[ctrlsize]:=#0;
+
+	pp:=getmemory(length(s)+1);
+	strpcopy(pp,s);
+
+	b:=psearchi(p,pp)<>nil;
+	if not_ then b:=not b;
+	mkluge:=b;
+	freememory(p,true);
+	freememory(pp,true);
 end;
 
 function maddr(var area:pharea;var msg:phmsg;var xmsg:pxmsg;x:pfparserknoten):boolean;

@@ -37,7 +37,7 @@ program ffma;
 
 const
 	configfile:string='/etc/fido/ffma.ini';
-	version='0.06.03';
+	version='0.06.04';
     compiler:string='Unknown';
 
 type

@@ -16,7 +16,7 @@ type
 
 procedure parser(var s:string;var x:pfparserknoten);
 const
- Symbole:array[5..21] of string=('SUBJ','FROM','TO','BODY','ORIG','DEST','LEN','OZONE','ONET','ONODE','OPOINT','DZONE','DNET','DNODE','DPOINT','FLAG', 'ANY');
+ Symbole:array[5..22] of string=('SUBJ','FROM','TO','BODY','ORIG','DEST','LEN','OZONE','ONET','ONODE','OPOINT','DZONE','DNET','DNODE','DPOINT','FLAG','KLUGE','ANY');
 
 
 implementation

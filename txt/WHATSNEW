@@ -2,6 +2,10 @@
 -Changes
 !Bugfix
 
+0.06.04 --- not released
+========================
++ search options kluge. Parameter similar to search option body
+
 0.06.03 --- 25.04.00 (sb)
 =========================
 ! try to fix the locking-Problem
