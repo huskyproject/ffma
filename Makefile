@@ -10,21 +10,21 @@ endif
 ifeq ($(DEBUG), 1)
 #  POPT = -g  -XS -Co -Ci -Cr -Ct -ddebugit
 ifeq ($(PC), ppc386)
-  POPT = -g  -XS -Co -Ci -Cr -Ct -T$(UNAMELONG) 
+  POPT = -g  -XS -Co -Ci -Cr -Ct -T$(UNAMELONG) -DPASCAL
   LOPT = -Fl$(LIBDIR)
   PCOPT =
 else
-  POPT = -g -T$(UNAMELONG) 
+  POPT = -g -T$(UNAMELONG) -dPASCAL
   POPT = -L$(LIBDIR)
   PCOPT = -c
 endif
 else
 ifeq ($(PC), ppc386)
-  POPT = -v0 -XS -Co -Ci -Cr -Ct
+  POPT = -v0 -XS -Co -Ci -Cr -Ct -DPASCAL
   LOPT = -Fl$(LIBDIR)
   PCOPT =
 else
-  POPT =
+  POPT = -dPASCAL
   LOPT = -L$(LIBDIR)
   PCOPT = -c
 endif
