@@ -2,9 +2,10 @@
 include ../huskymak.cfg
 
 ifeq ($(DEBUG), 1)
-  POPT = -g -XS -Co -Ci -Cr -Ct -ddebugit
+#  POPT = -g  -XS -Co -Ci -Cr -Ct -ddebugit
+  POPT = -g  -XS -Co -Ci -Cr -Ct
 else
-  POPT = -v0  -XS -Co -Ci -Cr -Ct
+  POPT = -v0 -XS -Co -Ci -Cr -Ct
 endif
 
 LOPT = -Fl$(LIBDIR)
