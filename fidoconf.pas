@@ -43,9 +43,7 @@ unit fidoconf;
   function strend(str : pchar) : pchar;
     { return type might be wrong }   
 
-{$ifndef PASCAL}
 
-{$endif}
 
   function striptwhite(str:pchar):pchar;cdecl;
 
@@ -89,7 +87,7 @@ unit fidoconf;
 
      e_forward = (fOff,fSecure,fOn);
 
-     forward = e_forward;
+     _forward = e_forward;
 
      e_emptypktpwd = (eOff,eSecure,eOn);
 
